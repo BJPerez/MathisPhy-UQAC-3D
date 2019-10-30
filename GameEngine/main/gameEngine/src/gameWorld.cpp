@@ -3,12 +3,10 @@
 #include <chrono>
 #include <algorithm>
 
-void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-
 GameWorld::GameWorld(): m_openGlWrapper(SCR_WIDTH, SCR_HEIGHT, WINDOW_TITLE), m_mainWindow(m_openGlWrapper.getMainWindow())
 {
 	// Initialize graphics
-	m_openGlWrapper.setKeyboardCallback(m_mainWindow, keyCallback);
+	m_openGlWrapper.setKeyboardCallback(m_mainWindow, getUniqueIntentions);
 
 	// Register particle shader
 	opengl_wrapper::Shader particleShader;
@@ -112,11 +110,3 @@ void GameWorld::renderGame() const
 	m_openGlWrapper.swapGraphicalBuffers(m_mainWindow);
 }
 
-void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	InputsManager* const inputsManager = static_cast<InputsManager * const>(glfwGetWindowUserPointer(window));
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-	{
-		inputsManager->addIntention(InputsManager::Intention::CLOSE_MAIN_WINDOW);
-	}
-}

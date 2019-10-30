@@ -2,11 +2,16 @@
 
 std::vector<InputsManager::Intention> InputsManager::getPendingIntentions(GLFWwindow* window)
 {
+	getFrameIntentions();
+	return m_pendingIntentions;
+}
+
+void InputsManager::getFrameIntentions()
+{
 	/*if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 	{
 		m_pendingIntentions.push_back(Intention::MOVE_BLOB_TOP);
 	}*/
-	return m_pendingIntentions;
 }
 
 void InputsManager::clearIntentions()
@@ -17,4 +22,13 @@ void InputsManager::clearIntentions()
 void InputsManager::addIntention(Intention intention)
 {
 	m_pendingIntentions.push_back(intention);
+}
+
+void getUniqueIntentions(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	InputsManager* const inputsManager = static_cast<InputsManager* const>(glfwGetWindowUserPointer(window));
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+	{
+		inputsManager->addIntention(InputsManager::Intention::CLOSE_MAIN_WINDOW);
+	}
 }
