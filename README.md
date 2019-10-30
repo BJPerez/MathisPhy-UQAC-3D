@@ -1,4 +1,4 @@
-# MathisPhy-UQAC-3D
+# Maths and Physique Game Engine Project
 
 Project made in 2019 for the "Mathématiques et Physique pour le jeu vidéo" class at UQAC.
 The project aims to realize a simple physical game engine and to use it in a simple game.
@@ -52,6 +52,6 @@ While the program is running, press A to generate a blob : an entity made of par
 * **PEREZ Benjamin PERB02119501**
 
 ## Links
-The github project : https://github.com/BJPerez/MathisPhy-UQAC-3D
+The github project : https://github.com/BJPerez/MathsPhy-UQAC
 
 The OpenGl tutorial: https://learnopengl.com/
