@@ -52,6 +52,6 @@ While the program is running, press A to generate a blob : an entity made of par
 * **PEREZ Benjamin PERB02119501**
 
 ## Links
-The github project : https://github.com/BJPerez/MathsPhy-UQAC
+The github project : https://github.com/BJPerez/MathisPhy-UQAC-3D
 
 The OpenGl tutorial: https://learnopengl.com/
