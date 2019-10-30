@@ -30,3 +30,8 @@
 *.exe
 *.out
 *.app
+
+# Visual Studio files
+GameEngine/.vs/*
+GameEngine/out/*
+.vs/*
