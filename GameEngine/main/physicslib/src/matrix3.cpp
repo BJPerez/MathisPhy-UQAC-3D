@@ -2,6 +2,15 @@
 
 namespace physicslib
 {
+	Matrix3::Matrix3()
+		: m_data({
+			1, 0, 0,
+			0, 1, 0,
+			0, 0, 1
+		})
+	{
+	}
+
 	Matrix3::Matrix3(double fillNumber)
 		: m_data(fillNumber, 9)
 	{
@@ -203,11 +212,16 @@ namespace physicslib
 	// ---------------
 	double& Matrix3::operator()(const unsigned int row, const unsigned int column)
 	{
-		return m_data[2 * row + column];
+		return m_data[3 * row + column];
 	}
 
 	const double& Matrix3::operator()(const unsigned int row, const unsigned int column) const
 	{
-		return m_data[2 * row + column];
+		return m_data[3 * row + column];
+	}
+
+	std::size_t Matrix3::getSize()
+	{
+		return 3;
 	}
 }

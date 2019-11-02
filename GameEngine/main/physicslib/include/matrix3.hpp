@@ -8,8 +8,23 @@ namespace physicslib
 	class Matrix3
 	{
 	public:
-		explicit Matrix3(double fillNumber = 0.);
+		/*
+		 * Default constructor
+		 * Create the identity matrix 3x3
+		 */
+		Matrix3();
+
+		/*
+		 * Create a matrix 3x3 filled with the number `fillNumber`
+		 */
+		explicit Matrix3(double fillNumber);
+
+		/*
+		 * Create a matrix 3x3 with an initializer list 
+		 * `Matrix3 mat { 0, 1, 2, 3, 4, 5, 6, 7, 8 }`
+		 */
 		Matrix3(const std::initializer_list<double>& initializerList);
+
 		Matrix3(const Matrix3& anotherMatrix) = default;
 		virtual ~Matrix3() = default;
 
@@ -37,6 +52,8 @@ namespace physicslib
 		// Getters/Setters
 		double& operator()(const unsigned int row, const unsigned int column);
 		const double& operator()(const unsigned int row, const unsigned int column) const;
+
+		std::size_t getSize();
 	private:
 		std::valarray<double> m_data;
 	};
