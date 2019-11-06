@@ -21,13 +21,32 @@ namespace physicslib
 	{
 	}
 
+	Matrix3::Matrix3(const Quaternion& quaternion)
+		: m_data({
+			1 - (2 * quaternion.getJ() * quaternion.getJ() + 2 * quaternion.getK() * quaternion.getK()),
+			2 * quaternion.getI() * quaternion.getJ() + 2 * quaternion.getK() * quaternion.getR(),
+			2 * quaternion.getI() * quaternion.getK() - 2 * quaternion.getJ() * quaternion.getR(),
+			2 * quaternion.getI() * quaternion.getJ() - 2 * quaternion.getK() * quaternion.getR(),
+			1 - (2 * quaternion.getI() * quaternion.getI() + 2 * quaternion.getK() * quaternion.getK()),
+			2 * quaternion.getJ() * quaternion.getK() + 2 * quaternion.getI() * quaternion.getR(),
+			2 * quaternion.getI() * quaternion.getK() + 2 * quaternion.getJ() * quaternion.getR(),
+			2 * quaternion.getJ() * quaternion.getK() - 2 * quaternion.getI() * quaternion.getR(),
+			1 - (2 * quaternion.getI() * quaternion.getI() + 2 * quaternion.getJ() * quaternion.getJ()),
+		})
+	{
+	}
+
 	// -----------------
 	// Matrix operations
 	// -----------------
 	double Matrix3::getDeterminant() const
 	{
-		return (*this)(0, 0) * (*this)(1, 1) * (*this)(2, 2) + (*this)(1, 0) * (*this)(2, 1) * (*this)(0, 2) + (*this)(2, 0) * (*this)(0, 1) * (*this)(1, 2)
-			 - (*this)(0, 0) * (*this)(2, 1) * (*this)(1, 2) - (*this)(2, 0) * (*this)(1, 1) * (*this)(0, 2) - (*this)(1, 0) * (*this)(0, 1) * (*this)(2, 2);
+		return (*this)(0, 0) * (*this)(1, 1) * (*this)(2, 2)
+			 + (*this)(1, 0) * (*this)(2, 1) * (*this)(0, 2)
+			 + (*this)(2, 0) * (*this)(0, 1) * (*this)(1, 2)
+			 - (*this)(0, 0) * (*this)(2, 1) * (*this)(1, 2)
+			 - (*this)(2, 0) * (*this)(1, 1) * (*this)(0, 2)
+			 - (*this)(1, 0) * (*this)(0, 1) * (*this)(2, 2);
 	}
 
 	void Matrix3::reverse()
@@ -58,8 +77,24 @@ namespace physicslib
 	Matrix3 Matrix3::getReverseMatrix() const
 	{
 		Matrix3 newMatrix(*this);
-
 		newMatrix.reverse();
+
+		return newMatrix;
+	}
+
+	void Matrix3::transpose()
+	{
+		*this = {
+			(*this)(0, 0), (*this)(1, 0), (*this)(2, 0),
+			(*this)(0, 1), (*this)(1, 1), (*this)(2, 1),
+			(*this)(0, 2), (*this)(1, 2), (*this)(2, 2),
+		};
+	}
+
+	Matrix3 Matrix3::getTransposedMatrix() const
+	{
+		Matrix3 newMatrix(*this);
+		newMatrix.transpose();
 
 		return newMatrix;
 	}
