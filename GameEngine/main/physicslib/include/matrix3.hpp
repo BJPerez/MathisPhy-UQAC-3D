@@ -30,18 +30,29 @@ namespace physicslib
 
 		Matrix3& operator=(const Matrix3& anotherMatrix) = default;
 
-		// Matrix operations
+		/**
+		 * Get the determinent of the matrix
+		 */
 		double getDeterminant() const;
+
+		/**
+		 * Reverse the matrix
+		 */
 		void reverse();
+
+		/**
+		 * return the inverse of the matrix in a new matrix object
+		 */
 		Matrix3 getReverseMatrix() const;
 
 		// Matrix mathematical operations
+		Matrix3 operator-() const;
 		Matrix3& operator+=(const Matrix3& anotherMatrix);
-		Matrix3 operator+(const Matrix3& anotherMatrix);
+		Matrix3 operator+(const Matrix3& anotherMatrix) const;
 		Matrix3& operator-=(const Matrix3& anotherMatrix);
-		Matrix3 operator-(const Matrix3& anotherMatrix);
+		Matrix3 operator-(const Matrix3& anotherMatrix) const;
 		Matrix3& operator*=(const Matrix3& anotherMatrix);
-		Matrix3 operator*(const Matrix3& anotherMatrix);
+		Matrix3 operator*(const Matrix3& anotherMatrix) const;
 
 		// Matrix/scalar operations
 		Matrix3& operator+=(const double scalar);
@@ -49,8 +60,16 @@ namespace physicslib
 		Matrix3& operator*=(const double scalar);
 		Matrix3& operator/=(const double scalar);
 
-		// Getters/Setters
+		/**
+		 * Setter
+		 * `mat(i, j) = 3;`
+		 */
 		double& operator()(const unsigned int row, const unsigned int column);
+
+		/**
+		 * Getter
+		 * `double n = mat(i, j);`
+		 */
 		const double& operator()(const unsigned int row, const unsigned int column) const;
 
 		std::size_t getSize();

@@ -67,6 +67,14 @@ namespace physicslib
 	// ------------------------------
 	// Matrix mathematical operations
 	// ------------------------------
+	Matrix3 Matrix3::operator-() const
+	{
+		Matrix3 newMatrix(*this);
+		newMatrix *= 1.;
+
+		return newMatrix;
+	}
+
 	Matrix3& Matrix3::operator+=(const Matrix3& anotherMatrix)
 	{
 		m_data += anotherMatrix.m_data;
@@ -74,7 +82,7 @@ namespace physicslib
 		return *this;
 	}
 
-	Matrix3 Matrix3::operator+(const Matrix3& anotherMatrix)
+	Matrix3 Matrix3::operator+(const Matrix3& anotherMatrix) const
 	{
 		Matrix3 newMatrix(*this);
 		newMatrix *= anotherMatrix;
@@ -89,7 +97,7 @@ namespace physicslib
 		return *this;
 	}
 
-	Matrix3 Matrix3::operator-(const Matrix3& anotherMatrix)
+	Matrix3 Matrix3::operator-(const Matrix3& anotherMatrix) const
 	{
 		Matrix3 newMatrix(*this);
 		newMatrix *= anotherMatrix;
@@ -116,7 +124,7 @@ namespace physicslib
 		return *this;
 	}
 
-	Matrix3 Matrix3::operator*(const Matrix3& anotherMatrix)
+	Matrix3 Matrix3::operator*(const Matrix3& anotherMatrix) const
 	{
 		Matrix3 newMatrix(*this);
 		newMatrix *= anotherMatrix;
