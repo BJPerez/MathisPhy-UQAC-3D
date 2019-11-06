@@ -2,6 +2,7 @@
 
 #include <valarray>
 #include <initializer_list>
+#include "math/quaternion.hpp"
 
 namespace physicslib
 {
@@ -25,6 +26,11 @@ namespace physicslib
 		 */
 		Matrix3(const std::initializer_list<double>& initializerList);
 
+		/*
+		 * Create a matrix from a quaternion
+		 */
+		Matrix3(const Quaternion& quaternion);
+
 		Matrix3(const Matrix3& anotherMatrix) = default;
 		virtual ~Matrix3() = default;
 
@@ -44,6 +50,16 @@ namespace physicslib
 		 * return the inverse of the matrix in a new matrix object
 		 */
 		Matrix3 getReverseMatrix() const;
+
+		/**
+		 * Transpose the matrix
+		 */
+		void transpose();
+
+		/**
+		 * return the transposed of the matrix in a new matrix object
+		 */
+		Matrix3 getTransposedMatrix() const;
 
 		// Matrix mathematical operations
 		Matrix3 operator-() const;
