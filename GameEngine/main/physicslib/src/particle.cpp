@@ -1,4 +1,4 @@
-#include "../include/particle.hpp"
+#include "particle.hpp"
 #include <math.h>
 #include <random>
 
