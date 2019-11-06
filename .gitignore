@@ -31,7 +31,8 @@
 *.out
 *.app
 
-# Visual Studio files
-GameEngine/.vs/*
-GameEngine/out/*
-.vs/*
+# Visual studio
+*\.vs
+
+# Output Files
+GameEngine/out
