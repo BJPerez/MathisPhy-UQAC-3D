@@ -1,7 +1,7 @@
 #include <iostream>
 #include <math.h>
-#include "../include/quaternion.hpp"
-#include "../include/vector3.hpp"
+#include "math/quaternion.hpp"
+#include "math/vector3.hpp"
 namespace physicslib
 {
 	Quaternion::Quaternion() {};
