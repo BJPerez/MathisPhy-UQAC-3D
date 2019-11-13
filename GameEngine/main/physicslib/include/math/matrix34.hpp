@@ -9,7 +9,7 @@ namespace physicslib
 		Matrix34();
 
 		/* Creates a matrix filled with fillNumber */
-		explicit Matrix34(double fillNumber = 0.);
+		explicit Matrix34(double fillNumber);
 
 		/*
 		 * Create a matrix 4x4 with an initializer list

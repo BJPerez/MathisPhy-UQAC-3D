@@ -15,7 +15,9 @@ namespace physicslib
 		Quaternion();
 		Quaternion(double r, Vector3 vector);
 		Quaternion(double r, double i, double j, double k);
-		//Quaternion(Quaternion const& anotherQuaternion);
+		Quaternion(Quaternion const& anotherQuaternion) = default;
+
+		Quaternion& operator=(const Quaternion& anotherMatrix) = default;
 
 		Quaternion operator-() const;
 		Quaternion& operator *=(double scalar);
