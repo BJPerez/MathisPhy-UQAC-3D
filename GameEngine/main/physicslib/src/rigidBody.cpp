@@ -18,21 +18,25 @@ namespace physicslib
 
 	void RigidBody::computeDerivedData()
 	{
-		// TODO: Calculer transformMatrix
+		// TO VERIFY
+		m_transformMatrix = Matrix3(Quaternion(0, m_position) * m_orientation);
 
 		m_inverseInertiaTensor = m_transformMatrix * m_inverseInertiaTensor * m_transformMatrix.getReverseMatrix();
 	}
 
 	void RigidBody::addForceAtPoint(const Vector3& force, const Vector3& point)
 	{
+		Vector3 localPoint(m_transformMatrix * point);
+
 		m_forceAccumulator += force;
+		m_torqueAccumulator += localPoint.CrossProduct(force);
 	}
 
 	void RigidBody::addForceAtBodyPoint(const Vector3& force, const Vector3& point)
 	{
+		Vector3 worldPoint(m_transformMatrix.getReverseMatrix() * point);
 
-
-		addForceAtPoint(force, point);
+		addForceAtPoint(force, worldPoint);
 	}
 
 	void RigidBody::clearAccumulators()
