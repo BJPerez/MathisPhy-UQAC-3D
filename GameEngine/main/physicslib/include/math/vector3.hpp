@@ -12,7 +12,10 @@ namespace physicslib
 	public :
 		Vector3();
 		Vector3(double x, double y, double z);
-		Vector3(Vector3 const& anotherVector);
+		Vector3(Vector3 const& anotherVector) = default;
+		virtual ~Vector3() = default;
+
+		Vector3& operator=(const Vector3& anotherVector) = default;
 
 		Vector3& operator+=(const Vector3& anotherVector);
 		Vector3& operator-=(const Vector3& anotherVector);

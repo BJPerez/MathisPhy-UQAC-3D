@@ -70,6 +70,9 @@ namespace physicslib
 		Matrix3& operator*=(const Matrix3& anotherMatrix);
 		Matrix3 operator*(const Matrix3& anotherMatrix) const;
 
+		// Matrix/vector operations
+		Vector3 operator*(const Vector3& vector) const;
+
 		// Matrix/scalar operations
 		Matrix3& operator+=(const double scalar);
 		Matrix3& operator-=(const double scalar);

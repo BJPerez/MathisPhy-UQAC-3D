@@ -12,13 +12,6 @@ namespace physicslib
 		m_z = z;
 	}
 
-	Vector3::Vector3(Vector3 const& anotherVector)
-	{
-		m_x = anotherVector.getX();
-		m_y = anotherVector.getY();
-		m_z = anotherVector.getZ();
-	}
-
 	Vector3& Vector3::operator+=(const Vector3& anotherVector) 
 	{
 		m_x += anotherVector.getX();

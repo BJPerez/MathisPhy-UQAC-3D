@@ -168,6 +168,20 @@ namespace physicslib
 	}
 
 	// ------------------------
+	// Matrix/vector operations
+	// ------------------------
+	Vector3 Matrix3::operator*(const Vector3& vector) const
+	{
+		Vector3 newVector(
+			m_data[0] * vector.getX() + m_data[1] * vector.getY() + m_data[2] * vector.getZ(),
+			m_data[3] * vector.getX() + m_data[4] * vector.getY() + m_data[5] * vector.getZ(),
+			m_data[6] * vector.getX() + m_data[7] * vector.getY() + m_data[8] * vector.getZ()
+		);
+
+		return newVector;
+	}
+
+	// ------------------------
 	// Matrix/scalar operations
 	// ------------------------
 	Matrix3& Matrix3::operator+=(const double scalar)
