@@ -85,7 +85,7 @@ namespace opengl_wrapper
 	}
 
 	// create buffers to contains graphical data
-	std::tuple<unsigned int, unsigned int, unsigned int> OpenGlWrapper::createAndBindBackgroundDataBuffers
+	std::tuple<unsigned int, unsigned int, unsigned int> OpenGlWrapper::createAndBindDataBuffers
 		(const std::vector<double>& verticesBuffer, const std::vector<unsigned int>& indicesBuffer) const
 	{
 		const double * vertices = verticesBuffer.data();
@@ -104,45 +104,8 @@ namespace opengl_wrapper
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer.size()*sizeof(unsigned int), indices, GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_DOUBLE, GL_FALSE, 6 * sizeof(double), (void*)0);
+		glVertexAttribPointer(0, 3, GL_DOUBLE, GL_FALSE, 3 * sizeof(double), (void*)0);
 		glEnableVertexAttribArray(0);
-
-		glVertexAttribPointer(1, 3, GL_DOUBLE, GL_FALSE, 6 * sizeof(double), (void*)(3 * sizeof(double)));
-		glEnableVertexAttribArray(1);
-
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-		return { VAO, VBO, EBO };
-	}
-
-	// create buffers to contains graphical data
-	std::tuple<unsigned int, unsigned int, unsigned int> OpenGlWrapper::createAndBindParticlesDataBuffers
-	(const std::vector<double>& verticesBuffer, const std::vector<unsigned int>& indicesBuffer) const
-	{
-		const double* vertices = verticesBuffer.data();
-		const unsigned int* indices = indicesBuffer.data();
-
-		unsigned int VBO, VAO, EBO;
-		glGenVertexArrays(1, &VAO);
-		glGenBuffers(1, &VBO);
-		glGenBuffers(1, &EBO);
-		// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-		glBindVertexArray(VAO);
-
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, verticesBuffer.size() * sizeof(double), vertices, GL_STREAM_DRAW);
-
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer.size() * sizeof(unsigned int), indices, GL_STATIC_DRAW);
-
-		glVertexAttribPointer(0, 3, GL_DOUBLE, GL_FALSE, 9 * sizeof(double), (void*)0);
-		glEnableVertexAttribArray(0);
-
-		glVertexAttribPointer(1, 3, GL_DOUBLE, GL_FALSE, 9 * sizeof(double), (void*)(3 * sizeof(double)));
-		glEnableVertexAttribArray(1);
-
-		glVertexAttribPointer(2, 3, GL_DOUBLE, GL_FALSE, 9 * sizeof(double), (void*)(6 * sizeof(double)));
-		glEnableVertexAttribArray(2);
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
