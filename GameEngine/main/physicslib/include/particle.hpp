@@ -1,6 +1,7 @@
 #pragma once
-#include <vector3.hpp>
 #include <string>
+#include "math/vector3.hpp"
+
 namespace physicslib
 {	
 	class Particle
