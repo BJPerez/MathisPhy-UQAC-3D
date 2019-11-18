@@ -5,7 +5,7 @@
 /*
  * This class manages the player inputs.
  * It is based on "intentions". Indeed, the keys are not directly mapped 
- * to actions. Each key is mapped to an intention and then the GameWorld
+ * to actions. Instead, each key is mapped to an intention and then the GameWorld
  * knows what to do with it.
  */
 class InputsManager
@@ -13,7 +13,7 @@ class InputsManager
 public:
 
 	/*
-	 * This enum contains the list of all the possible intention types.
+	 * This enum contains the list of all the intention types.
 	 */
 	enum Intention
 	{

@@ -7,45 +7,45 @@
 #include "openGlWrapper.hpp"
 #include "shader.hpp"
 #include "particle.hpp"
-#include "forceGenerator/particleForceGenerator.hpp"
-#include "forceGenerator/gravityForceGenerator.hpp"
-#include "forceGenerator/dragForceGenerator.hpp"
-#include "forceGenerator/forceRegister.hpp"
-#include "collisions/contactRegister.hpp"
 #include "collisions/particleContact.hpp"
 #include "../include/inputsManager.hpp"
+#include "physicEngine.hpp"
+#include "renderEngine.hpp"
 
+/*
+ * The GameWorld class
+ */
 class GameWorld
 {
 public:
+
+	/*
+	 * Constructor
+	 */
 	GameWorld();
 
+	/*
+	 * Starts and runs the game engine.
+	 */
 	void run();
 private:
-
-	enum ShaderProgramType
-	{
-		ST_DEFAULT
-	};
-
-	const unsigned int SCR_WIDTH = 800;
-	const unsigned int SCR_HEIGHT = 600;
-	const std::string WINDOW_TITLE = "Game Engine Demo";
-	std::unordered_map<ShaderProgramType, opengl_wrapper::Shader> m_shaderPrograms;
-	physicslib::ForceRegister m_forceRegister;
-	physicslib::ContactRegister m_contactRegister;
-
-	const opengl_wrapper::OpenGlWrapper m_openGlWrapper;
-	GLFWwindow* const m_mainWindow;
-	InputsManager m_inputsManager;
-
-	void updateGame(const std::vector<InputsManager::Intention> pendingIntentions, const double frametime);
+	InputsManager m_inputsManager; // The instance of the input manager
+	PhysicEngine m_physicEngine; // The instance of the physic engine
+	RenderEngine m_renderEngine; // The instance of the render engine
+	GLFWwindow* const m_mainWindow; // The opengl id of the main window
+	
+	/*
+	 * Function to get the list of all the pending envent.
+	 */
 	std::vector<InputsManager::Intention> getPendingIntentions();
-	void processInputs(const std::vector<InputsManager::Intention>& pendingIntentions);
-	void processIntention(InputsManager::Intention intention);
-	void updatePhysics(const double frametime);
-	void generateAllForces();
-	void detectCollision();
 
-	void renderGame() const;
+	/*
+	 * Function to process the given pending intention
+	 */
+	void processInputs(const std::vector<InputsManager::Intention>& pendingIntentions);
+
+	/*
+	 * Function to process one intention
+	 */
+	void processIntention(InputsManager::Intention intention);
 };
