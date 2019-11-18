@@ -267,17 +267,17 @@ namespace physicslib
 	// ---------------
 	// Getters/Setters
 	// ---------------
-	double& Matrix3::operator()(const unsigned int row, const unsigned int column)
+	double& Matrix3::operator()(const std::size_t row, const std::size_t column)
 	{
 		return m_data[3 * row + column];
 	}
 
-	const double& Matrix3::operator()(const unsigned int row, const unsigned int column) const
+	const double& Matrix3::operator()(const std::size_t row, const std::size_t column) const
 	{
 		return m_data[3 * row + column];
 	}
 
-	std::size_t Matrix3::getSize()
+	constexpr std::size_t Matrix3::getSize() const
 	{
 		return 3;
 	}

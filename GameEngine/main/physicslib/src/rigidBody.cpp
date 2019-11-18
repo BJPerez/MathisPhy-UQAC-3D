@@ -7,7 +7,7 @@ namespace physicslib
 		const Vector3 initialPosition, const Vector3 initialSpeed, const Vector3 initialAcceleration,
 		const Quaternion initialOrientation, const Vector3 initialRotation
 	)
-		: m_inverseMass(1 / mass)
+		: m_inverseMass(1. / mass)
 		, m_position(initialPosition)
 		, m_speed(initialSpeed)
 		, m_acceleration(initialAcceleration)
@@ -26,6 +26,7 @@ namespace physicslib
 
 	void RigidBody::addForceAtPoint(const Vector3& force, const Vector3& point)
 	{
+		// Convert point to coordinates relative to the center-of-mass
 		Vector3 localPoint(m_transformMatrix * point);
 
 		m_forceAccumulator += force;
@@ -34,6 +35,7 @@ namespace physicslib
 
 	void RigidBody::addForceAtBodyPoint(const Vector3& force, const Vector3& point)
 	{
+		// Convert point to coordinates relative to the world
 		Vector3 worldPoint(m_transformMatrix.getReverseMatrix() * point);
 
 		addForceAtPoint(force, worldPoint);

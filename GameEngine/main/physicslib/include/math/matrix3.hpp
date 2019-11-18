@@ -9,31 +9,41 @@ namespace physicslib
 	class Matrix3
 	{
 	public:
-		/*
+		/**
 		 * Default constructor
 		 * Create the identity matrix 3x3
 		 */
 		Matrix3();
 
-		/*
+		/**
 		 * Create a matrix 3x3 filled with the number `fillNumber`
 		 */
 		explicit Matrix3(double fillNumber);
 
-		/*
+		/**
 		 * Create a matrix 3x3 with an initializer list 
 		 * `Matrix3 mat { 0, 1, 2, 3, 4, 5, 6, 7, 8 }`
 		 */
 		Matrix3(const std::initializer_list<double>& initializerList);
 
-		/*
-		 * Create a matrix from a quaternion
+		/**
+		 * Create a matrix 3x3 from a quaternion
 		 */
 		Matrix3(const Quaternion& quaternion);
 
+		/**
+		 * Default copy constructor
+		 */
 		Matrix3(const Matrix3& anotherMatrix) = default;
+
+		/**
+		 * Virtual destructor
+		 */
 		virtual ~Matrix3() = default;
 
+		/**
+		 * Default assignment operator
+		 */
 		Matrix3& operator=(const Matrix3& anotherMatrix) = default;
 
 		/**
@@ -47,7 +57,7 @@ namespace physicslib
 		void reverse();
 
 		/**
-		 * return the inverse of the matrix in a new matrix object
+		 * return reversed matrix in a new matrix object
 		 */
 		Matrix3 getReverseMatrix() const;
 
@@ -57,7 +67,7 @@ namespace physicslib
 		void transpose();
 
 		/**
-		 * return the transposed of the matrix in a new matrix object
+		 * return transposed matrix in a new matrix object
 		 */
 		Matrix3 getTransposedMatrix() const;
 
@@ -83,15 +93,18 @@ namespace physicslib
 		 * Setter
 		 * `mat(i, j) = 3;`
 		 */
-		double& operator()(const unsigned int row, const unsigned int column);
+		double& operator()(const std::size_t row, const std::size_t column);
 
 		/**
 		 * Getter
 		 * `double n = mat(i, j);`
 		 */
-		const double& operator()(const unsigned int row, const unsigned int column) const;
+		const double& operator()(const std::size_t row, const std::size_t column) const;
 
-		std::size_t getSize();
+		/**
+		 * Get the size of the matrix
+		 */
+		constexpr std::size_t getSize() const;
 	private:
 		std::valarray<double> m_data;
 	};
