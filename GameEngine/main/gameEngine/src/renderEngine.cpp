@@ -59,25 +59,19 @@ void RenderEngine::draw()
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	float time = (float)glfwGetTime();
 	physicslib::Matrix3 mat(physicslib::Quaternion(cos(time/2), 0, 0, sin(time/2)));
-	//mat = 0.5 * mat;
-	/*float matrixData[] = {
-		 mat(0,0), mat(0,1), mat(0,2), 0.5,
-		 mat(1,0), mat(1,1), mat(1,2), -0.5,
-		 mat(2,0), mat(2,1), mat(2,2), 0,
-		 0,        0,        0,        1
-	};*/
+	physicslib::Matrix3 scaling{ 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5 };
+	mat = scaling * mat;
 	float matrixData[] = {
-	 1, 0, 0, 0.5,
-	 0, 1, 0, 0,
-	 0, 0, 1, 0,
-	 0, 0, 0, 1
+		 mat(0,0), mat(1,0), mat(2,0), 0,
+		 mat(0,1), mat(1,1), mat(2,1), 0,
+		 mat(0,2), mat(2,1), mat(2,2), 0,
+		 0.4,        -0.4,        0,        1
 	};
 	// get matrix's uniform location and set matrix
 	unsigned int transformLoc = glGetUniformLocation(m_shaderPrograms.at(ST_DEFAULT).getId(), "transform");
  	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, matrixData);
-
-
-
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
+
+
 

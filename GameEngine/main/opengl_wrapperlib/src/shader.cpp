@@ -98,6 +98,8 @@ namespace opengl_wrapper
 		vertexShaderStream << vertexShaderFile.rdbuf();
 		fragmentShaderStream << fragmentShaderFile.rdbuf();
 
+		std::cout << vertexShaderStream.str() << std::endl;
+
 		// Close file handlers
 		vertexShaderFile.close();
 		fragmentShaderFile.close();
