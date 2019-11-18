@@ -120,7 +120,7 @@ namespace physicslib
 
 	double Quaternion::getNorm() const
 	{
-		return pow(getSquaredNorm(), 0.5);
+		return sqrt(getSquaredNorm());
 	}
 
 	double Quaternion::getSquaredNorm() const
@@ -137,7 +137,7 @@ namespace physicslib
 			return;
 		}
 		
-		squaredNorm = 1. / pow(squaredNorm, 0.5);
+		squaredNorm = 1. / sqrt(squaredNorm);
 		(*this) *= squaredNorm;
 	}
 

@@ -164,7 +164,7 @@ namespace physicslib
 
 	double Vector3::getNorm() const
 	{
-		return pow(getSquaredNorm(), 0.5);
+		return sqrt(getSquaredNorm());
 	}
 
 	double Vector3::getSquaredNorm() const
