@@ -23,11 +23,6 @@ namespace physicslib
 		m_k = k;
 	}
 
-	Vector3 Vector3::operator-() const
-	{
-		return Vector3(-m_x, -m_y, -m_z);
-	}
-
 
 	Quaternion Quaternion::operator-() const
 	{
