@@ -14,9 +14,9 @@ namespace physicslib
 		 * Constructors
 		 */
 		RigidBody(
-			const double mass,
-			const Vector3 initialPosition = Vector3(), const Vector3 initialSpeed = Vector3(), const Vector3 initialAcceleration = Vector3(),
-			const Quaternion initialOrientation = Quaternion(), const Vector3 initialRotation = Vector3()
+			const double mass, const double angularDamping,
+			const Vector3 initialPosition = Vector3(), const Vector3 initialVelocity = Vector3(), const Vector3 initialAcceleration = Vector3(),
+			const Quaternion initialOrientation = Quaternion(), const Vector3 initialRotation = Vector3(), const Vector3 initialAngularAcceleration = Vector3()
 		);
 		RigidBody(const RigidBody& anotherRigidBody) = default;
 
@@ -24,6 +24,11 @@ namespace physicslib
 		 * Virtual destructor
 		 */
 		virtual ~RigidBody() = default;
+
+		/**
+		 * Integrate the position and orientation of the rigid body over time
+		 */
+		void integrate(double frameTime);
 
 		/**
 		 * Compute transformation matrix and inertia tensor each frame
@@ -50,14 +55,14 @@ namespace physicslib
 		// Getters
 		double getInverseMass() const;
 		physicslib::Vector3 getPosition() const;
-		physicslib::Vector3 getSpeed() const;
+		physicslib::Vector3 getVelocity() const;
 		physicslib::Vector3 getAcceleration() const;
 		physicslib::Quaternion getOrientation() const;
 		physicslib::Vector3 getRotation() const;
 
 		// Setters
 		void setPosition(physicslib::Vector3 position);
-		void setSpeed(physicslib::Vector3 speed);
+		void setVelocity(physicslib::Vector3 velocity);
 		void setAcceleration(physicslib::Vector3 acceleration);
 		void setOrientation(physicslib::Quaternion orientation);
 		void setRotation(physicslib::Vector3 rotation);
@@ -67,12 +72,14 @@ namespace physicslib
 	private:
 		double m_inverseMass;
 		physicslib::Vector3 m_position;
-		physicslib::Vector3 m_speed;
+		physicslib::Vector3 m_velocity;
 		physicslib::Vector3 m_acceleration;
 		physicslib::Vector3 m_forceAccumulator;
 		physicslib::Quaternion m_orientation;
 		physicslib::Vector3 m_rotation;
+		physicslib::Vector3 m_angularAcceleration;
 		physicslib::Vector3 m_torqueAccumulator;
+		double m_angularDamping;
 
 		// Computed data
 		physicslib::Matrix3 m_transformMatrix;

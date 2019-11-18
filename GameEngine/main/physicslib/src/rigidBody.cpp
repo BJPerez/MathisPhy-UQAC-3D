@@ -3,17 +3,42 @@
 namespace physicslib
 {
 	RigidBody::RigidBody(
-		const double mass,
-		const Vector3 initialPosition, const Vector3 initialSpeed, const Vector3 initialAcceleration,
-		const Quaternion initialOrientation, const Vector3 initialRotation
+		const double mass, const double angularDamping,
+		const Vector3 initialPosition, const Vector3 initialVelocity, const Vector3 initialAcceleration,
+		const Quaternion initialOrientation, const Vector3 initialRotation, const Vector3 initialAngularAcceleration
 	)
 		: m_inverseMass(1. / mass)
+		, m_angularDamping(angularDamping)
 		, m_position(initialPosition)
-		, m_speed(initialSpeed)
+		, m_velocity(initialVelocity)
 		, m_acceleration(initialAcceleration)
 		, m_orientation(initialOrientation)
 		, m_rotation(initialRotation)
+		, m_angularAcceleration(initialAngularAcceleration)
 	{
+		// Hardcoded 1x1x1 box inertia tensor
+		m_inverseInertiaTensor = Matrix3({
+			mass / 6., 0, 0,
+			0, mass / 6., 0,
+			0, 0, mass / 6.
+		}).getReverseMatrix();
+	}
+
+	void RigidBody::integrate(double frameTime)
+	{
+		// Position update
+		m_acceleration = m_forceAccumulator;
+		m_velocity = m_velocity + m_acceleration * frameTime;
+		m_position = m_position + m_velocity * frameTime;
+		
+
+		// Orientation update
+		m_acceleration = m_inverseInertiaTensor * m_torqueAccumulator;
+		m_rotation = m_rotation * pow(m_angularDamping, frameTime) + m_angularAcceleration * frameTime;
+		m_orientation.updateAngularVelocity(m_rotation, frameTime);
+		
+		computeDerivedData();
+		clearAccumulators();
 	}
 
 	void RigidBody::computeDerivedData()
@@ -59,9 +84,9 @@ namespace physicslib
 		return m_position;
 	}
 
-	physicslib::Vector3 RigidBody::getSpeed() const
+	physicslib::Vector3 RigidBody::getVelocity() const
 	{
-		return m_speed;
+		return m_velocity;
 	}
 
 	physicslib::Vector3 RigidBody::getAcceleration() const
@@ -84,9 +109,9 @@ namespace physicslib
 		m_position = position;
 	}
 
-	void RigidBody::setSpeed(physicslib::Vector3 speed)
+	void RigidBody::setVelocity(physicslib::Vector3 velocity)
 	{
-		m_speed = speed;
+		m_velocity = velocity;
 	}
 
 	void RigidBody::setAcceleration(physicslib::Vector3 acceleration)
