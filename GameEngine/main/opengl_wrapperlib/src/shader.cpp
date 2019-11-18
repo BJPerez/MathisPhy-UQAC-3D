@@ -124,4 +124,9 @@ namespace opengl_wrapper
 	{
 		glUniform1f(glGetUniformLocation(m_shaderId, name.c_str()), value);
 	}
+
+	ShaderID Shader::getId() const
+	{
+		return m_shaderId;
+	}
 }

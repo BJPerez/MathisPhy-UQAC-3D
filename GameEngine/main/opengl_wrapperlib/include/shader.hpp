@@ -50,6 +50,11 @@ namespace opengl_wrapper
 		 */
 		void setUniform(const std::string& name, float value) const;
 
+		/*
+		 * Getter for m_shaderId attribute.
+		 */
+		ShaderID getId() const;
+
 	private:
 		ShaderID m_shaderId; // The shader's opengl id 
 	};
