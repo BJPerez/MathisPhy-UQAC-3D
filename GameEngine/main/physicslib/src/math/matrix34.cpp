@@ -1,13 +1,13 @@
-#include "../../include/math/matrix34.hpp"
+#include "math/matrix34.hpp"
 
 namespace physicslib
 {
 	Matrix34::Matrix34()
 		: m_data({
-				1, 0, 0, 0,
-				0, 1, 0, 0,
-				0, 0, 1, 0
-			})
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0
+		})
 	{
 	}
 	
@@ -22,14 +22,32 @@ namespace physicslib
 	{
 	}
 
+	Matrix34::Matrix34(const Quaternion& quaternion)
+		: m_data({
+			1 - (2 * quaternion.getJ() * quaternion.getJ() + 2 * quaternion.getK() * quaternion.getK()),
+			2 * quaternion.getI() * quaternion.getJ() + 2 * quaternion.getK() * quaternion.getR(),
+			2 * quaternion.getI() * quaternion.getK() - 2 * quaternion.getJ() * quaternion.getR(),
+			2 * quaternion.getI() * quaternion.getJ() - 2 * quaternion.getK() * quaternion.getR(),
+			1 - (2 * quaternion.getI() * quaternion.getI() + 2 * quaternion.getK() * quaternion.getK()),
+			2 * quaternion.getJ() * quaternion.getK() + 2 * quaternion.getI() * quaternion.getR(),
+			2 * quaternion.getI() * quaternion.getK() + 2 * quaternion.getJ() * quaternion.getR(),
+			2 * quaternion.getJ() * quaternion.getK() - 2 * quaternion.getI() * quaternion.getR(),
+			1 - (2 * quaternion.getI() * quaternion.getI() + 2 * quaternion.getJ() * quaternion.getJ()),
+			quaternion.getI(),
+			quaternion.getJ(),
+			quaternion.getK()
+		})
+	{
+	}
+
 	double Matrix34::getDeterminant() const
 	{
-		return (*this)(8) * (*this)(5)*(*this)(2) 
-			+ (*this)(4) * (*this)(9) * (*this)(2) 
-			+ (*this)(8) * (*this)(1) * (*this)(6)
-			- (*this)(0) * (*this)(9) * (*this)(6)
-			- (*this)(4) * (*this)(1) * (*this)(10)
-			- (*this)(0) * (*this)(5) * (*this)(10);
+		return m_data[8] * m_data[5] * m_data[2] 
+			+ m_data[4] * m_data[9] * m_data[2] 
+			+ m_data[8] * m_data[1] * m_data[6]
+			- m_data[0] * m_data[9] * m_data[6]
+			- m_data[4] * m_data[1] * m_data[10]
+			- m_data[0] * m_data[5] * m_data[10];
 	}
 
 	void Matrix34::reverse()
@@ -40,44 +58,44 @@ namespace physicslib
 			return;
 		}
 
-		/* Voir formule du cour */
+		// Voir formule du cours
 		*this =
 		{
-			/* Ligne 1 */
-			-(*this)(9) * (*this)(6) + (*this)(5) * (*this)(10),
-			(*this)(9) * (*this)(2) - (*this)(1) * (*this)(10),
-			-(*this)(5) * (*this)(2) + (*this)(1) * (*this)(6),
-			/* Rouge */
-			(*this)(9) * (*this)(6) * (*this)(3)
-			- (*this)(5) * (*this)(10) * (*this)(3)
-			- (*this)(9) * (*this)(2) * (*this)(7)
-			+ (*this)(1) * (*this)(10) * (*this)(7)
-			+ (*this)(5) * (*this)(2) * (*this)(11)
-			- (*this)(1) * (*this)(6) * (*this)(11),
+			// Ligne 1
+			-m_data[9] * m_data[6] + m_data[5] * m_data[10],
+			m_data[9] * m_data[2] - m_data[1] * m_data[10],
+			-m_data[5] * m_data[2] + m_data[1] * m_data[6],
+			// Rouge
+			m_data[9] * m_data[6] * m_data[3]
+			- m_data[5] * m_data[10] * m_data[3]
+			- m_data[9] * m_data[2] * m_data[7]
+			+ m_data[1] * m_data[10] * m_data[7]
+			+ m_data[5] * m_data[2] * m_data[11]
+			- m_data[1] * m_data[6] * m_data[11],
 
-			/* Ligne 2 */
-			(*this)(8) * (*this)(6) - (*this)(4) * (*this)(10),
-			-(*this)(8) * (*this)(2) + (*this)(0) * (*this)(10),
-			(*this)(4) * (*this)(2) - (*this)(0) * (*this)(6),
-			/* Bleu */
-			-(*this)(8)* (*this)(6)* (*this)(3)
-			+ (*this)(4) * (*this)(10) * (*this)(3)
-			+ (*this)(8) * (*this)(2) * (*this)(7)
-			- (*this)(0) * (*this)(10) * (*this)(7)
-			- (*this)(4) * (*this)(2) * (*this)(11)
-			+ (*this)(0) * (*this)(6) * (*this)(11),
+			// Ligne 2
+			m_data[8] * m_data[6] - m_data[4] * m_data[10],
+			-m_data[8] * m_data[2] + m_data[0] * m_data[10],
+			m_data[4] * m_data[2] - m_data[0] * m_data[6],
+			// Bleu
+			-m_data[8]* m_data[6]* m_data[3]
+			+ m_data[4] * m_data[10] * m_data[3]
+			+ m_data[8] * m_data[2] * m_data[7]
+			- m_data[0] * m_data[10] * m_data[7]
+			- m_data[4] * m_data[2] * m_data[11]
+			+ m_data[0] * m_data[6] * m_data[11],
 
-			/* Ligne 3 */
-			-(*this)(8)* (*this)(5) + (*this)(4) * (*this)(9),
-			(*this)(8) * (*this)(1) - (*this)(0) * (*this)(9),
-			-(*this)(4)* (*this)(1) + (*this)(0) * (*this)(5),
-			/* Vert */
-			(*this)(8)* (*this)(5)* (*this)(3)
-			- (*this)(4) * (*this)(9) * (*this)(3)
-			- (*this)(8) * (*this)(1) * (*this)(7)
-			+ (*this)(0) * (*this)(9) * (*this)(7)
-			+ (*this)(4) * (*this)(1) * (*this)(11)
-			- (*this)(0) * (*this)(5) * (*this)(11)
+			// Ligne 3
+			-m_data[8]* m_data[5] + m_data[4] * m_data[9],
+			m_data[8] * m_data[1] - m_data[0] * m_data[9],
+			-m_data[4]* m_data[1] + m_data[0] * m_data[5],
+			// Vert
+			m_data[8]* m_data[5]* m_data[3]
+			- m_data[4] * m_data[9] * m_data[3]
+			- m_data[8] * m_data[1] * m_data[7]
+			+ m_data[0] * m_data[9] * m_data[7]
+			+ m_data[4] * m_data[1] * m_data[11]
+			- m_data[0] * m_data[5] * m_data[11]
 		};
 		*this /= determinant;
 	}
@@ -89,7 +107,9 @@ namespace physicslib
 		return res;
 	}
 
+	// ------------------------------
 	// Matrix mathematical operations
+	// ------------------------------
 	Matrix34& Matrix34::operator+=(const Matrix34& anotherMatrix)
 	{
 		m_data += anotherMatrix.m_data;
@@ -118,20 +138,20 @@ namespace physicslib
 	{
 		*this =
 		{
-			(*this)(0) * anotherMatrix(0) + (*this)(1) * anotherMatrix(4) + (*this)(2) * anotherMatrix(8),
-			(*this)(0) * anotherMatrix(1) + (*this)(1) * anotherMatrix(5) + (*this)(2) * anotherMatrix(9),
-			(*this)(0) * anotherMatrix(2) + (*this)(1) * anotherMatrix(6) + (*this)(2) * anotherMatrix(10),
-			(*this)(0) * anotherMatrix(3) + (*this)(1) * anotherMatrix(7) + (*this)(2) * anotherMatrix(11) + (*this)(3),
+			m_data[0] * anotherMatrix.m_data[0] + m_data[1] * anotherMatrix.m_data[4] + m_data[2] * anotherMatrix.m_data[8],
+			m_data[0] * anotherMatrix.m_data[1] + m_data[1] * anotherMatrix.m_data[5] + m_data[2] * anotherMatrix.m_data[9],
+			m_data[0] * anotherMatrix.m_data[2] + m_data[1] * anotherMatrix.m_data[6] + m_data[2] * anotherMatrix.m_data[10],
+			m_data[0] * anotherMatrix.m_data[3] + m_data[1] * anotherMatrix.m_data[7] + m_data[2] * anotherMatrix.m_data[11] + m_data[3],
 
-			(*this)(4) * anotherMatrix(0) + (*this)(5) * anotherMatrix(4) + (*this)(6) * anotherMatrix(8),
-			(*this)(4) * anotherMatrix(1) + (*this)(5) * anotherMatrix(5) + (*this)(6) * anotherMatrix(9),
-			(*this)(4) * anotherMatrix(2) + (*this)(5) * anotherMatrix(6) + (*this)(6) * anotherMatrix(10),
-			(*this)(4) * anotherMatrix(3) + (*this)(5) * anotherMatrix(7) + (*this)(6) * anotherMatrix(11) + (*this)(7),
+			m_data[4] * anotherMatrix.m_data[0] + m_data[5] * anotherMatrix.m_data[4] + m_data[6] * anotherMatrix.m_data[8],
+			m_data[4] * anotherMatrix.m_data[1] + m_data[5] * anotherMatrix.m_data[5] + m_data[6] * anotherMatrix.m_data[9],
+			m_data[4] * anotherMatrix.m_data[2] + m_data[5] * anotherMatrix.m_data[6] + m_data[6] * anotherMatrix.m_data[10],
+			m_data[4] * anotherMatrix.m_data[3] + m_data[5] * anotherMatrix.m_data[7] + m_data[6] * anotherMatrix.m_data[11] + m_data[7],
 
-			(*this)(8) * anotherMatrix(0) + (*this)(9) * anotherMatrix(4) + (*this)(10) * anotherMatrix(8),
-			(*this)(8) * anotherMatrix(1) + (*this)(9) * anotherMatrix(5) + (*this)(10) * anotherMatrix(9),
-			(*this)(8) * anotherMatrix(2) + (*this)(9) * anotherMatrix(6) + (*this)(10) * anotherMatrix(10),
-			(*this)(8) * anotherMatrix(3) + (*this)(9) * anotherMatrix(7) + (*this)(10) * anotherMatrix(11) + (*this)(11)
+			m_data[8] * anotherMatrix.m_data[0] + m_data[9] * anotherMatrix.m_data[4] + m_data[10] * anotherMatrix.m_data[8],
+			m_data[8] * anotherMatrix.m_data[1] + m_data[9] * anotherMatrix.m_data[5] + m_data[10] * anotherMatrix.m_data[9],
+			m_data[8] * anotherMatrix.m_data[2] + m_data[9] * anotherMatrix.m_data[6] + m_data[10] * anotherMatrix.m_data[10],
+			m_data[8] * anotherMatrix.m_data[3] + m_data[9] * anotherMatrix.m_data[7] + m_data[10] * anotherMatrix.m_data[11] + m_data[11]
 		};
 		return *this;
 	}
@@ -142,43 +162,91 @@ namespace physicslib
 		return res *= anotherMatrix;
 	}
 
+	// ------------------------
 	// Matrix/scalar operations
+	// ------------------------
 	Matrix34& Matrix34::operator+=(const double scalar)
 	{
 		m_data += scalar;
 		return *this;
 	}
+
 	Matrix34& Matrix34::operator-=(const double scalar)
 	{
 		m_data -= scalar;
 		return *this;
 	}
+
 	Matrix34& Matrix34::operator*=(const double scalar)
 	{
 		m_data *= scalar;
 		return *this;
 	}
+
 	Matrix34& Matrix34::operator/=(const double scalar)
 	{
 		m_data /= scalar;
 		return *this;
 	}
+
+	Matrix34 operator+(const Matrix34& matrix, const double scalar)
+	{
+		Matrix34 newMatrix(matrix);
+		newMatrix += scalar;
+		return newMatrix;
+	}
+
+	Matrix34 operator+(const double scalar, const Matrix34& matrix)
+	{
+		return matrix + scalar;
+	}
+
+	Matrix34 operator-(const Matrix34& matrix, const double scalar)
+	{
+		Matrix34 newMatrix(matrix);
+		newMatrix -= scalar;
+		return newMatrix;
+	}
+
+	Matrix34 operator-(const double scalar, const Matrix34& matrix)
+	{
+		return matrix - scalar;
+	}
+
+	Matrix34 operator*(const Matrix34& matrix, const double scalar)
+	{
+		Matrix34 newMatrix(matrix);
+		newMatrix *= scalar;
+		return newMatrix;
+	}
+
+	Matrix34 operator*(const double scalar, const Matrix34& matrix)
+	{
+		return matrix * scalar;
+	}
+
+	Matrix34 operator/(const Matrix34& matrix, const double scalar)
+	{
+		Matrix34 newMatrix(matrix);
+		newMatrix /= scalar;
+		return newMatrix;
+	}
+
+	Matrix34 operator/(const double scalar, const Matrix34& matrix)
+	{
+		return matrix / scalar;
+	}
 	
+	// ---------------
 	// Getters/Setters
-	double& Matrix34::operator()(const unsigned int row, const unsigned int column)
+	// ---------------
+	double& Matrix34::operator()(const std::size_t row, const std::size_t column)
 	{
 		return m_data[4 * row + column];
 	}
-	const double& Matrix34::operator()(const unsigned int row, const unsigned int column) const
+
+	const double& Matrix34::operator()(const std::size_t row, const std::size_t column) const
 	{
 		return m_data[4 * row + column];
-	}
-	double& Matrix34::operator()(const unsigned int index)
-	{
-		return m_data[index];
-	}
-	const double& Matrix34::operator()(const unsigned int index) const
-	{
-		return m_data[index];
 	}
 }

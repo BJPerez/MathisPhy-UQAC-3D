@@ -168,6 +168,20 @@ namespace physicslib
 	}
 
 	// ------------------------
+	// Matrix/vector operations
+	// ------------------------
+	Vector3 Matrix3::operator*(const Vector3& vector) const
+	{
+		Vector3 newVector(
+			m_data[0] * vector.getX() + m_data[1] * vector.getY() + m_data[2] * vector.getZ(),
+			m_data[3] * vector.getX() + m_data[4] * vector.getY() + m_data[5] * vector.getZ(),
+			m_data[6] * vector.getX() + m_data[7] * vector.getY() + m_data[8] * vector.getZ()
+		);
+
+		return newVector;
+	}
+
+	// ------------------------
 	// Matrix/scalar operations
 	// ------------------------
 	Matrix3& Matrix3::operator+=(const double scalar)
@@ -253,17 +267,17 @@ namespace physicslib
 	// ---------------
 	// Getters/Setters
 	// ---------------
-	double& Matrix3::operator()(const unsigned int row, const unsigned int column)
+	double& Matrix3::operator()(const std::size_t row, const std::size_t column)
 	{
 		return m_data[3 * row + column];
 	}
 
-	const double& Matrix3::operator()(const unsigned int row, const unsigned int column) const
+	const double& Matrix3::operator()(const std::size_t row, const std::size_t column) const
 	{
 		return m_data[3 * row + column];
 	}
 
-	std::size_t Matrix3::getSize()
+	constexpr std::size_t Matrix3::getSize() const
 	{
 		return 3;
 	}
