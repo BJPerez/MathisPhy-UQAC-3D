@@ -22,6 +22,24 @@ namespace physicslib
 	{
 	}
 
+	Matrix34::Matrix34(const Quaternion& quaternion)
+		: m_data({
+			1 - (2 * quaternion.getJ() * quaternion.getJ() + 2 * quaternion.getK() * quaternion.getK()),
+			2 * quaternion.getI() * quaternion.getJ() + 2 * quaternion.getK() * quaternion.getR(),
+			2 * quaternion.getI() * quaternion.getK() - 2 * quaternion.getJ() * quaternion.getR(),
+			2 * quaternion.getI() * quaternion.getJ() - 2 * quaternion.getK() * quaternion.getR(),
+			1 - (2 * quaternion.getI() * quaternion.getI() + 2 * quaternion.getK() * quaternion.getK()),
+			2 * quaternion.getJ() * quaternion.getK() + 2 * quaternion.getI() * quaternion.getR(),
+			2 * quaternion.getI() * quaternion.getK() + 2 * quaternion.getJ() * quaternion.getR(),
+			2 * quaternion.getJ() * quaternion.getK() - 2 * quaternion.getI() * quaternion.getR(),
+			1 - (2 * quaternion.getI() * quaternion.getI() + 2 * quaternion.getJ() * quaternion.getJ()),
+			quaternion.getI(),
+			quaternion.getJ(),
+			quaternion.getK()
+		})
+	{
+	}
+
 	double Matrix34::getDeterminant() const
 	{
 		return m_data[8] * m_data[5] * m_data[2] 
