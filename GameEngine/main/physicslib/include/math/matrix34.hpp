@@ -52,12 +52,12 @@ namespace physicslib
 		double getDeterminant() const;
 
 		/**
-		 * Reverse the matrix
+		 * Reverses the matrix
 		 */
 		void reverse();
 
 		/**
-		 * return reversed matrix in a new matrix object
+		 * Return reversed matrix in a new matrix object
 		 */
 		Matrix34 getReverseMatrix() const;
 
