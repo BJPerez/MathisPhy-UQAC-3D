@@ -25,10 +25,10 @@ void RenderEngine::render()
 	// drawings
 	std::vector< physicslib::RigidBody> bodies;
 	physicslib::RigidBody body(10.0, 0.0, physicslib::Vector3(5, 5, 5), physicslib::Vector3(), physicslib::Vector3(), 
-		physicslib::Vector3(), physicslib::Quaternion( cos(3.14/4), 0, 0, sin(3.14/4) ));
+		physicslib::Vector3(), physicslib::Quaternion( cos(3.14/8), 0, 0, sin(3.14/8) ));
 	bodies.push_back(body);
 	physicslib::RigidBody body2(10.0, 0.0, physicslib::Vector3(5, 5, 5), physicslib::Vector3(10,0,0), physicslib::Vector3(),
-		physicslib::Vector3(), physicslib::Quaternion(cos(3.14 / 4), 0, 0, sin(3.14 / 4)));
+		physicslib::Vector3(), physicslib::Quaternion(cos(3.14 / 8), 0, 0, sin(3.14 / 8)));
 	bodies.push_back(body2);
 	draw(bodies);
 
