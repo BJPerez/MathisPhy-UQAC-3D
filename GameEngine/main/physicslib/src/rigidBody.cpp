@@ -3,7 +3,7 @@
 namespace physicslib
 {
 	RigidBody::RigidBody(
-		const double mass, const double angularDamping,
+		const double mass, const double angularDamping, const Vector3 boxSize,
 		const Vector3 initialPosition, const Vector3 initialVelocity, const Vector3 initialAcceleration,
 		const Quaternion initialOrientation, const Vector3 initialRotation, const Vector3 initialAngularAcceleration
 	)
@@ -18,9 +18,9 @@ namespace physicslib
 	{
 		// Hardcoded 1x1x1 box inertia tensor
 		m_inverseInertiaTensor = Matrix3({
-			mass / 6., 0, 0,
-			0, mass / 6., 0,
-			0, 0, mass / 6.
+			(boxSize.getY() * boxSize.getY() + boxSize.getZ() * boxSize.getZ()) * mass / 12., 0, 0,
+			0, (boxSize.getX() * boxSize.getX() + boxSize.getZ() * boxSize.getZ()) * mass / 12., 0,
+			0, 0, (boxSize.getX() * boxSize.getX() + boxSize.getZ() * boxSize.getZ()) * mass / 12.
 		}).getReverseMatrix();
 	}
 
