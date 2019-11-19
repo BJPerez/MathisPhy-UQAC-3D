@@ -12,7 +12,7 @@ namespace physicslib
 	{
 		// Convert both extrimity coordinates to worldSpace
 		Vector3 worldExtremity1(/*m_transformMatrix.getReverseMatrix() * m_extremity1 */  Vector3(0, 0, 0));
-		Vector3 worldExtremity2(/*m_transformMatrix.getReverseMatrix() * m_extremity2*/ Vector3(0,0,0));
+		Vector3 worldExtremity2(/*m_transformMatrix.getReverseMatrix() * m_extremity2 */ Vector3(0,0,0));
 
 		// Compute spring length
 		Vector3 d = worldExtremity1 - worldExtremity2;
