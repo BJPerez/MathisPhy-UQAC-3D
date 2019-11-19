@@ -127,6 +127,11 @@ namespace opengl_wrapper
 		glUniform1f(glGetUniformLocation(m_shaderId, name.c_str()), value);
 	}
 
+	void Shader::setUniform(const std::string& name, float* value) const
+	{
+		glUniformMatrix4fv(glGetUniformLocation(m_shaderId, name.c_str()), 1, GL_FALSE, value);
+	}
+
 	ShaderID Shader::getId() const
 	{
 		return m_shaderId;

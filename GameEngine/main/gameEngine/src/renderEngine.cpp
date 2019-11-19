@@ -1,8 +1,8 @@
 #include "../include/renderEngine.hpp"
 
-#include "math/matrix3.hpp"
-#include "math/quaternion.hpp"
-#include <math.h> // just for cos and sin functions
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 RenderEngine::RenderEngine() : m_openGlWrapper(SCR_WIDTH, SCR_HEIGHT, WINDOW_TITLE), m_mainWindow(m_openGlWrapper.getMainWindow())
 {
@@ -36,41 +36,100 @@ GLFWwindow* const RenderEngine::getMainWindow() const
 
 void RenderEngine::draw()
 {
+	glEnable(GL_DEPTH_TEST);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+	opengl_wrapper::Shader currentShader = m_shaderPrograms.at(ST_DEFAULT);
+
+
 	if (res)
 	{
-		std::vector<double> vertices = {
-			 0.5f,  0.5f, 0.0f,  // top right
-			 0.5f, -0.5f, 0.0f,  // bottom right
-			-0.5f, -0.5f, 0.0f,  // bottom left
-			-0.5f,  0.5f, 0.0f   // top left 
+		std::vector<float> vertices = {
+			-0.5f, -0.5f, -0.5f,  
+			 0.5f, -0.5f, -0.5f, 
+			 0.5f,  0.5f, -0.5f,  
+			 0.5f,  0.5f, -0.5f, 
+			-0.5f,  0.5f, -0.5f,  
+			-0.5f, -0.5f, -0.5f, 
+
+			-0.5f, -0.5f,  0.5f,  
+			 0.5f, -0.5f,  0.5f,  
+			 0.5f,  0.5f,  0.5f, 
+			 0.5f,  0.5f,  0.5f, 
+			-0.5f,  0.5f,  0.5f,  
+			-0.5f, -0.5f,  0.5f,  
+
+			-0.5f,  0.5f,  0.5f,  
+			-0.5f,  0.5f, -0.5f,  
+			-0.5f, -0.5f, -0.5f, 
+			-0.5f, -0.5f, -0.5f, 
+			-0.5f, -0.5f,  0.5f,  
+			-0.5f,  0.5f,  0.5f,  
+
+			 0.5f,  0.5f,  0.5f, 
+			 0.5f,  0.5f, -0.5f, 
+			 0.5f, -0.5f, -0.5f,  
+			 0.5f, -0.5f, -0.5f,  
+			 0.5f, -0.5f,  0.5f,  
+			 0.5f,  0.5f,  0.5f,  
+
+			-0.5f, -0.5f, -0.5f,  
+			 0.5f, -0.5f, -0.5f,  
+			 0.5f, -0.5f,  0.5f,  
+			 0.5f, -0.5f,  0.5f,
+			-0.5f, -0.5f,  0.5f, 
+			-0.5f, -0.5f, -0.5f, 
+
+			-0.5f,  0.5f, -0.5f, 
+			 0.5f,  0.5f, -0.5f,  
+			 0.5f,  0.5f,  0.5f,  
+			 0.5f,  0.5f,  0.5f, 
+			-0.5f,  0.5f,  0.5f, 
+			-0.5f,  0.5f, -0.5f,  
 		};
-		std::vector<unsigned int>indices = {  // note that we start from 0!
+
+		/*std::vector<unsigned int>indices = {  // note that we start from 0!
 			0, 1, 3,  // first Triangle
 			1, 2, 3   // second Triangle
 		};
-		m_openGlWrapper.createAndBindDataBuffers(vertices, indices);
+		m_openGlWrapper.createAndBindDataBuffers(vertices, indices);*/
+		unsigned int VBO, VAO;
+		glGenVertexArrays(1, &VAO);
+		glGenBuffers(1, &VBO);
 
+		glBindVertexArray(VAO);
+
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
+
+		// position attribute
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
 
 		// draw our first triangle
-		m_shaderPrograms.at(ST_DEFAULT).use();
+		currentShader.use();
 		res = false;
 	}
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	float time = (float)glfwGetTime();
-	physicslib::Matrix3 mat(physicslib::Quaternion(cos(time/2), 0, 0, sin(time/2)));
-	physicslib::Matrix3 scaling{ 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5 };
-	mat = scaling * mat;
-	float matrixData[] = {
-		 mat(0,0), mat(1,0), mat(2,0), 0,
-		 mat(0,1), mat(1,1), mat(2,1), 0,
-		 mat(0,2), mat(2,1), mat(2,2), 0,
-		 0.4,        -0.4,        0,        1
-	};
-	// get matrix's uniform location and set matrix
-	unsigned int transformLoc = glGetUniformLocation(m_shaderPrograms.at(ST_DEFAULT).getId(), "transform");
- 	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, matrixData);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	// Model matrix
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+	currentShader.setUniform("model", glm::value_ptr(model));
+
+	// View matrix
+	glm::mat4 view = glm::mat4(1.0f);
+	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+	currentShader.setUniform("view", glm::value_ptr(view));
+
+	// Project matrix
+	glm::mat4 projection;
+	projection = glm::perspective(glm::radians(45.0f), static_cast<float>(SCR_WIDTH) / SCR_HEIGHT, 0.1f, 100.0f);
+	currentShader.setUniform("projection", glm::value_ptr(projection));
+
+	glDrawArrays(GL_TRIANGLES, 0, 36);
 }
 
 
