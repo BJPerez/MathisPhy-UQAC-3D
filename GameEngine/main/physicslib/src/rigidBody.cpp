@@ -33,7 +33,7 @@ namespace physicslib
 		
 
 		// Orientation update
-		m_acceleration = m_inverseInertiaTensor * m_torqueAccumulator;
+		m_angularAcceleration = m_inverseInertiaTensor * m_torqueAccumulator;
 		m_rotation = m_rotation * pow(m_angularDamping, frameTime) + m_angularAcceleration * frameTime;
 		m_orientation.updateAngularVelocity(m_rotation, frameTime);
 		
