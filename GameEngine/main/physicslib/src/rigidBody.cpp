@@ -56,7 +56,7 @@ namespace physicslib
 	void RigidBody::addForceAtPoint(const Vector3& force, const Vector3& point)
 	{
 		// Convert point to coordinates relative to the center-of-mass
-		Vector3 localPoint(m_transformMatrix * point);
+		Vector3 localPoint = point.worldToLocal(m_transformMatrix);
 
 		m_forceAccumulator += force;
 		m_torqueAccumulator += localPoint.CrossProduct(force);
@@ -65,7 +65,7 @@ namespace physicslib
 	void RigidBody::addForceAtBodyPoint(const Vector3& force, const Vector3& point)
 	{
 		// Convert point to coordinates relative to the world
-		Vector3 worldPoint(m_transformMatrix.getReverseMatrix() * point);
+		Vector3 worldPoint = point.localToWorld(m_transformMatrix);
 
 		addForceAtPoint(force, worldPoint);
 	}

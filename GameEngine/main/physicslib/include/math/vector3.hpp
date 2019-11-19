@@ -1,5 +1,7 @@
 #pragma once
+
 #include <string>
+#include "math/matrix3.hpp"
 
 namespace physicslib
 {
@@ -75,6 +77,16 @@ namespace physicslib
 		 * Return normalized vector in a new vector object
 		 */
 		Vector3 getNormalizedVector() const;
+
+		/**
+		 * Return a new vector in world coordinates
+		 */
+		Vector3 localToWorld(const Matrix3& transformMatrix) const;
+
+		/**
+		 * Return a new vector in local coordinates
+		 */
+		Vector3 worldToLocal(const Matrix3& transformMatrix) const;
 
 		// Getters
 		double getX() const { return m_x; };
