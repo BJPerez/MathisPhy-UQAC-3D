@@ -15,6 +15,7 @@ namespace physicslib
 		, m_orientation(initialOrientation)
 		, m_rotation(initialRotation)
 		, m_angularAcceleration(initialAngularAcceleration)
+		, m_boxSize(boxSize)
 	{
 		// Hardcoded 1x1x1 box inertia tensor
 		m_inverseInertiaTensor = Matrix3({
@@ -70,6 +71,11 @@ namespace physicslib
 	{
 		m_forceAccumulator = physicslib::Vector3();
 		m_torqueAccumulator = physicslib::Vector3();
+	}
+
+	std::vector<double> RigidBody::getBoxVertices() const
+	{
+
 	}
 
 	#pragma region Getters/Setters

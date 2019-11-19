@@ -4,6 +4,7 @@
 #include "math/quaternion.hpp"
 #include "math/matrix34.hpp"
 #include "math/matrix3.hpp"
+#include <vector>
 
 namespace physicslib
 {
@@ -50,6 +51,13 @@ namespace physicslib
 		 */
 		void clearAccumulators();
 
+		/**
+		 * Get the vertices of the cube representing the rigid body.
+		 * We first create all the vextices from the rigidBodt position.
+		 * Then we apply the rotation to all the vertices.
+		 */
+		std::vector<double> getBoxVertices() const;
+
 		#pragma region Getters/Setters
 
 		// Getters
@@ -80,6 +88,7 @@ namespace physicslib
 		physicslib::Vector3 m_angularAcceleration;
 		physicslib::Vector3 m_torqueAccumulator;
 		double m_angularDamping;
+		physicslib::Vector3 m_boxSize;
 
 		// Computed data
 		physicslib::Matrix3 m_transformMatrix;

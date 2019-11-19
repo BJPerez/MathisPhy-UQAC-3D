@@ -96,7 +96,6 @@ void RenderEngine::draw()
 
 	// Model matrix
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
 	currentShader.setUniform("model", glm::value_ptr(model));
 
 	// View matrix
