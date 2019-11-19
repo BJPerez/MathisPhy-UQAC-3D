@@ -6,7 +6,10 @@
 
 RenderEngine::RenderEngine() : m_openGlWrapper(SCR_WIDTH, SCR_HEIGHT, WINDOW_TITLE), m_mainWindow(m_openGlWrapper.getMainWindow())
 {
-	// Register particle shader
+	// Enable depth testing
+	glEnable(GL_DEPTH_TEST);
+
+	// Register shader
 	opengl_wrapper::Shader defaultShader;
 	defaultShader.loadFromFile("resources/shaders/particle.vs", "resources/shaders/particle.fs");
 	m_shaderPrograms.insert(std::make_pair(ShaderProgramType::ST_DEFAULT, defaultShader));
@@ -16,6 +19,7 @@ void RenderEngine::render()
 {
 	// cleaning screen
 	m_openGlWrapper.clearCurrentWindow();
+	m_openGlWrapper.clearDepthBuffer();
 
 	// drawings
 	draw();
@@ -36,16 +40,12 @@ GLFWwindow* const RenderEngine::getMainWindow() const
 
 void RenderEngine::draw()
 {
-	glEnable(GL_DEPTH_TEST);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
 	opengl_wrapper::Shader currentShader = m_shaderPrograms.at(ST_DEFAULT);
-
+	currentShader.use();
 
 	if (res)
 	{
-		std::vector<float> vertices = {
+		std::vector<double> vertices = {
 			-0.5f, -0.5f, -0.5f,  
 			 0.5f, -0.5f, -0.5f, 
 			 0.5f,  0.5f, -0.5f,  
@@ -88,27 +88,7 @@ void RenderEngine::draw()
 			-0.5f,  0.5f,  0.5f, 
 			-0.5f,  0.5f, -0.5f,  
 		};
-
-		/*std::vector<unsigned int>indices = {  // note that we start from 0!
-			0, 1, 3,  // first Triangle
-			1, 2, 3   // second Triangle
-		};
-		m_openGlWrapper.createAndBindDataBuffers(vertices, indices);*/
-		unsigned int VBO, VAO;
-		glGenVertexArrays(1, &VAO);
-		glGenBuffers(1, &VBO);
-
-		glBindVertexArray(VAO);
-
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
-
-		// position attribute
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(0);
-
-		// draw our first triangle
-		currentShader.use();
+		m_openGlWrapper.createAndBindDataBuffer(vertices);
 		res = false;
 	}
 
