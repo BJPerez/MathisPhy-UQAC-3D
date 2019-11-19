@@ -75,7 +75,61 @@ namespace physicslib
 
 	std::vector<double> RigidBody::getBoxVertices() const
 	{
+		std::vector<double> vertices =
+		{
+			m_position.getX() - m_boxSize.getX() / 2, m_position.getY() - m_boxSize.getY() / 2, m_position.getZ() - m_boxSize.getZ() / 2,
+			m_position.getX() + m_boxSize.getX() / 2, m_position.getY() - m_boxSize.getY() / 2, m_position.getZ() - m_boxSize.getZ() / 2,
+			m_position.getX() + m_boxSize.getX() / 2, m_position.getY() + m_boxSize.getY() / 2, m_position.getZ() - m_boxSize.getZ() / 2,
+			m_position.getX() + m_boxSize.getX() / 2, m_position.getY() + m_boxSize.getY() / 2, m_position.getZ() - m_boxSize.getZ() / 2,
+			m_position.getX() - m_boxSize.getX() / 2, m_position.getY() + m_boxSize.getY() / 2, m_position.getZ() - m_boxSize.getZ() / 2,
+			m_position.getX() - m_boxSize.getX() / 2, m_position.getY() - m_boxSize.getY() / 2, m_position.getZ() - m_boxSize.getZ() / 2,
 
+			m_position.getX() - m_boxSize.getX() / 2, m_position.getY() - m_boxSize.getY() / 2, m_position.getZ() + m_boxSize.getZ() / 2,
+			m_position.getX() + m_boxSize.getX() / 2, m_position.getY() - m_boxSize.getY() / 2, m_position.getZ() + m_boxSize.getZ() / 2,
+			m_position.getX() + m_boxSize.getX() / 2, m_position.getY() + m_boxSize.getY() / 2, m_position.getZ() + m_boxSize.getZ() / 2,
+			m_position.getX() + m_boxSize.getX() / 2, m_position.getY() + m_boxSize.getY() / 2, m_position.getZ() + m_boxSize.getZ() / 2,
+			m_position.getX() - m_boxSize.getX() / 2, m_position.getY() + m_boxSize.getY() / 2, m_position.getZ() + m_boxSize.getZ() / 2,
+			m_position.getX() - m_boxSize.getX() / 2, m_position.getY() - m_boxSize.getY() / 2, m_position.getZ() + m_boxSize.getZ() / 2,
+
+			m_position.getX() - m_boxSize.getX() / 2, m_position.getY() + m_boxSize.getY() / 2, m_position.getZ() + m_boxSize.getZ() / 2,
+			m_position.getX() - m_boxSize.getX() / 2, m_position.getY() + m_boxSize.getY() / 2, m_position.getZ() - m_boxSize.getZ() / 2,
+			m_position.getX() - m_boxSize.getX() / 2, m_position.getY() - m_boxSize.getY() / 2, m_position.getZ() - m_boxSize.getZ() / 2,
+			m_position.getX() - m_boxSize.getX() / 2, m_position.getY() - m_boxSize.getY() / 2, m_position.getZ() - m_boxSize.getZ() / 2,
+			m_position.getX() - m_boxSize.getX() / 2, m_position.getY() - m_boxSize.getY() / 2, m_position.getZ() + m_boxSize.getZ() / 2,
+			m_position.getX() - m_boxSize.getX() / 2, m_position.getY() + m_boxSize.getY() / 2, m_position.getZ() + m_boxSize.getZ() / 2,
+
+			m_position.getX() + m_boxSize.getX() / 2, m_position.getY() + m_boxSize.getY() / 2, m_position.getZ() + m_boxSize.getZ() / 2,
+			m_position.getX() + m_boxSize.getX() / 2, m_position.getY() + m_boxSize.getY() / 2, m_position.getZ() - m_boxSize.getZ() / 2,
+			m_position.getX() + m_boxSize.getX() / 2, m_position.getY() - m_boxSize.getY() / 2, m_position.getZ() - m_boxSize.getZ() / 2,
+			m_position.getX() + m_boxSize.getX() / 2, m_position.getY() - m_boxSize.getY() / 2, m_position.getZ() - m_boxSize.getZ() / 2,
+			m_position.getX() + m_boxSize.getX() / 2, m_position.getY() - m_boxSize.getY() / 2, m_position.getZ() + m_boxSize.getZ() / 2,
+			m_position.getX() + m_boxSize.getX() / 2, m_position.getY() + m_boxSize.getY() / 2, m_position.getZ() + m_boxSize.getZ() / 2,
+
+			m_position.getX() - m_boxSize.getX() / 2, m_position.getY() - m_boxSize.getY() / 2, m_position.getZ() - m_boxSize.getZ() / 2,
+			m_position.getX() + m_boxSize.getX() / 2, m_position.getY() - m_boxSize.getY() / 2, m_position.getZ() - m_boxSize.getZ() / 2,
+			m_position.getX() + m_boxSize.getX() / 2, m_position.getY() - m_boxSize.getY() / 2, m_position.getZ() + m_boxSize.getZ() / 2,
+			m_position.getX() + m_boxSize.getX() / 2, m_position.getY() - m_boxSize.getY() / 2, m_position.getZ() + m_boxSize.getZ() / 2,
+			m_position.getX() - m_boxSize.getX() / 2, m_position.getY() - m_boxSize.getY() / 2, m_position.getZ() + m_boxSize.getZ() / 2,
+			m_position.getX() - m_boxSize.getX() / 2, m_position.getY() - m_boxSize.getY() / 2, m_position.getZ() - m_boxSize.getZ() / 2,
+
+			m_position.getX() - m_boxSize.getX() / 2, m_position.getY() + m_boxSize.getY() / 2, m_position.getZ() - m_boxSize.getZ() / 2,
+			m_position.getX() + m_boxSize.getX() / 2, m_position.getY() + m_boxSize.getY() / 2, m_position.getZ() - m_boxSize.getZ() / 2,
+			m_position.getX() + m_boxSize.getX() / 2, m_position.getY() + m_boxSize.getY() / 2, m_position.getZ() + m_boxSize.getZ() / 2,
+			m_position.getX() + m_boxSize.getX() / 2, m_position.getY() + m_boxSize.getY() / 2, m_position.getZ() + m_boxSize.getZ() / 2,
+			m_position.getX() - m_boxSize.getX() / 2, m_position.getY() + m_boxSize.getY() / 2, m_position.getZ() + m_boxSize.getZ() / 2,
+			m_position.getX() - m_boxSize.getX() / 2, m_position.getY() + m_boxSize.getY() / 2, m_position.getZ() - m_boxSize.getZ() / 2,
+		};
+
+		/*Matrix3 orientationMatrix(m_orientation);
+		for (unsigned int i = 0; i < vertices.size()-2; i += 3)
+		{
+			physicslib::Vector3 vertex(vertices.at(i), vertices.at(i + 1), vertices.at(i + 2));
+			vertex = orientationMatrix * vertex;
+			vertices[i] = vertex.getX();
+			vertices[i+1] = vertex.getY();
+			vertices[i+2] = vertex.getZ();
+		}*/
+		return vertices;
 	}
 
 	#pragma region Getters/Setters
