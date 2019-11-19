@@ -19,7 +19,7 @@ public:
 	/*
 	 * The function to call to render and display the game to the screen
 	 */
-	void render();
+	void render(const std::vector< physicslib::RigidBody>& bodies);
 
 	/*
 	 * Getter for the m_openGlWrapper attribute
@@ -53,5 +53,5 @@ private:
 	/*
 	 * Function to effectivly draw the display.
 	 */
-	void draw(std::vector<physicslib::RigidBody> bodies);
+	void draw(const std::vector<physicslib::RigidBody>& bodies);
 };

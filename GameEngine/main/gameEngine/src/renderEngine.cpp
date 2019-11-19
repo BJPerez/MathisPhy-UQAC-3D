@@ -15,20 +15,13 @@ RenderEngine::RenderEngine() : m_openGlWrapper(SCR_WIDTH, SCR_HEIGHT, WINDOW_TIT
 	m_shaderPrograms.insert(std::make_pair(ShaderProgramType::ST_DEFAULT, defaultShader));
 }
 
-void RenderEngine::render()
+void RenderEngine::render(const std::vector< physicslib::RigidBody>& bodies)
 {
 	// cleaning screen
 	m_openGlWrapper.clearCurrentWindow();
 	m_openGlWrapper.clearDepthBuffer();
 
 	// drawings
-	std::vector< physicslib::RigidBody> bodies;
-	physicslib::RigidBody body(10.0, 0.0, physicslib::Vector3(5, 5, 5), physicslib::Vector3(), physicslib::Vector3(), 
-		physicslib::Vector3(), physicslib::Quaternion( cos(3.14/8), 0, 0, sin(3.14/8) ));
-	bodies.push_back(body);
-	physicslib::RigidBody body2(10.0, 0.0, physicslib::Vector3(5, 5, 5), physicslib::Vector3(10,0,0), physicslib::Vector3(),
-		physicslib::Vector3(), physicslib::Quaternion(cos(3.14 / 8), 0, 0, sin(3.14 / 8)));
-	bodies.push_back(body2);
 	draw(bodies);
 
 	// swapping the double buffers
@@ -45,7 +38,7 @@ GLFWwindow* const RenderEngine::getMainWindow() const
 	return m_mainWindow;
 }
 
-void RenderEngine::draw(std::vector<physicslib::RigidBody> bodies)
+void RenderEngine::draw(const std::vector<physicslib::RigidBody>& bodies)
 {
 	opengl_wrapper::Shader currentShader = m_shaderPrograms.at(ST_DEFAULT);
 	currentShader.use();
