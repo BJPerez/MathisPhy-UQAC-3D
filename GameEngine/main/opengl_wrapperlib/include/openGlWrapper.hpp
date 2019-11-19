@@ -93,7 +93,7 @@ namespace opengl_wrapper
 		/*
 		 * Clear and free the memory of the opengl buffers corresponding to the given ids.
 		 */
-		void cleanAndDeleteDataBuffers(std::tuple<unsigned int, unsigned int, unsigned int> buffers) const;
+		void cleanAndDeleteDataBuffers(std::tuple<unsigned int, unsigned int> buffers) const;
 
 		/*
 		 * Close the main window

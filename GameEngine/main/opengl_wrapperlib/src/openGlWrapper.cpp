@@ -77,11 +77,10 @@ namespace opengl_wrapper
 		glDrawElements(shape, count, GL_UNSIGNED_INT, 0);
 	}
 
-	void OpenGlWrapper::cleanAndDeleteDataBuffers(std::tuple<unsigned int, unsigned int, unsigned int> buffers) const
+	void OpenGlWrapper::cleanAndDeleteDataBuffers(std::tuple<unsigned int, unsigned int> buffers) const
 	{
 		glDeleteVertexArrays(1, &std::get<0>(buffers));
 		glDeleteBuffers(1, &std::get<1>(buffers));
-		glDeleteBuffers(1, &std::get<2>(buffers));
 	}
 
 	// create buffers to contains graphical data

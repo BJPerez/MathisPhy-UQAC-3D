@@ -3,7 +3,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <algorithm>
 
 RenderEngine::RenderEngine() : m_openGlWrapper(SCR_WIDTH, SCR_HEIGHT, WINDOW_TITLE), m_mainWindow(m_openGlWrapper.getMainWindow())
 {
@@ -57,7 +56,7 @@ void RenderEngine::draw(std::vector<physicslib::RigidBody> bodies)
 		std::vector<double> bodyVertices = body.getBoxVertices();
 		vertices.insert(vertices.end(), bodyVertices.begin(), bodyVertices.end());
 	};
-	m_openGlWrapper.createAndBindDataBuffer(vertices);
+	std::tuple<unsigned int, unsigned int> openGlBuffers = m_openGlWrapper.createAndBindDataBuffer(vertices);
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -72,10 +71,11 @@ void RenderEngine::draw(std::vector<physicslib::RigidBody> bodies)
 
 	// Project matrix
 	glm::mat4 projection;
-	projection = glm::perspective(glm::radians(45.0f), static_cast<float>(SCR_WIDTH) / SCR_HEIGHT, 0.1f, 100.0f);
+	projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 	currentShader.setUniform("projection", glm::value_ptr(projection));
 
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size()/ 3);
+	m_openGlWrapper.cleanAndDeleteDataBuffers(openGlBuffers);
 }
 
 
