@@ -50,6 +50,16 @@ namespace opengl_wrapper
 		 */
 		void setUniform(const std::string& name, float value) const;
 
+		/*
+		 * Function to set a float matrice 4 value.
+		 */
+		void setUniform(const std::string& name, float* data) const;
+
+		/*
+		 * Getter for m_shaderId attribute.
+		 */
+		ShaderID getId() const;
+
 	private:
 		ShaderID m_shaderId; // The shader's opengl id 
 	};

@@ -3,6 +3,7 @@
 #include "openGlWrapper.hpp"
 #include "shader.hpp"
 #include <unordered_map>
+#include "rigidBody.hpp"
 
 /*
  * This class manages all the display.
@@ -52,7 +53,5 @@ private:
 	/*
 	 * Function to effectivly draw the display.
 	 */
-	void draw();
-
-	bool res = true;
+	void draw(std::vector<physicslib::RigidBody> bodies);
 };

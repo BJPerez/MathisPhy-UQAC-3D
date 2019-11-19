@@ -98,6 +98,8 @@ namespace opengl_wrapper
 		vertexShaderStream << vertexShaderFile.rdbuf();
 		fragmentShaderStream << fragmentShaderFile.rdbuf();
 
+		std::cout << vertexShaderStream.str() << std::endl;
+
 		// Close file handlers
 		vertexShaderFile.close();
 		fragmentShaderFile.close();
@@ -123,5 +125,15 @@ namespace opengl_wrapper
 	void Shader::setUniform(const std::string& name, float value) const
 	{
 		glUniform1f(glGetUniformLocation(m_shaderId, name.c_str()), value);
+	}
+
+	void Shader::setUniform(const std::string& name, float* value) const
+	{
+		glUniformMatrix4fv(glGetUniformLocation(m_shaderId, name.c_str()), 1, GL_FALSE, value);
+	}
+
+	ShaderID Shader::getId() const
+	{
+		return m_shaderId;
 	}
 }

@@ -77,39 +77,37 @@ namespace opengl_wrapper
 		glDrawElements(shape, count, GL_UNSIGNED_INT, 0);
 	}
 
-	void OpenGlWrapper::cleanAndDeleteDataBuffers(std::tuple<unsigned int, unsigned int, unsigned int> buffers) const
+	void OpenGlWrapper::cleanAndDeleteDataBuffers(std::tuple<unsigned int, unsigned int> buffers) const
 	{
 		glDeleteVertexArrays(1, &std::get<0>(buffers));
 		glDeleteBuffers(1, &std::get<1>(buffers));
-		glDeleteBuffers(1, &std::get<2>(buffers));
 	}
 
 	// create buffers to contains graphical data
-	std::tuple<unsigned int, unsigned int, unsigned int> OpenGlWrapper::createAndBindDataBuffers
-		(const std::vector<double>& verticesBuffer, const std::vector<unsigned int>& indicesBuffer) const
+	std::tuple<unsigned int, unsigned int> OpenGlWrapper::createAndBindDataBuffer
+		(const std::vector<double>& verticesBuffer) const
 	{
 		const double * vertices = verticesBuffer.data();
-		const unsigned int* indices = indicesBuffer.data();
 
-		unsigned int VBO, VAO, EBO;
+		unsigned int VBO, VAO;
 		glGenVertexArrays(1, &VAO);
 		glGenBuffers(1, &VBO);
-		glGenBuffers(1, &EBO);
-		// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+
 		glBindVertexArray(VAO);
 
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, verticesBuffer.size()*sizeof(double), vertices, GL_STREAM_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, verticesBuffer.size() * sizeof(double), vertices, GL_STATIC_DRAW);
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer.size()*sizeof(unsigned int), indices, GL_STATIC_DRAW);
-
+		// position attribute
 		glVertexAttribPointer(0, 3, GL_DOUBLE, GL_FALSE, 3 * sizeof(double), (void*)0);
 		glEnableVertexAttribArray(0);
 
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		return { VAO, VBO };
+	}
 
-		return { VAO, VBO, EBO };
+	void OpenGlWrapper::clearDepthBuffer() const
+	{
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
 	void OpenGlWrapper::swapGraphicalBuffers(GLFWwindow* const window) const

@@ -1,5 +1,8 @@
 #include "rigidBody.hpp"
 
+
+#include <iostream>
+
 namespace physicslib
 {
 	RigidBody::RigidBody(
@@ -15,6 +18,7 @@ namespace physicslib
 		, m_orientation(initialOrientation)
 		, m_rotation(initialRotation)
 		, m_angularAcceleration(initialAngularAcceleration)
+		, m_boxSize(boxSize)
 	{
 		// Hardcoded 1x1x1 box inertia tensor
 		m_inverseInertiaTensor = Matrix3({
@@ -70,6 +74,86 @@ namespace physicslib
 	{
 		m_forceAccumulator = physicslib::Vector3();
 		m_torqueAccumulator = physicslib::Vector3();
+	}
+
+	std::vector<double> RigidBody::getBoxVertices() const
+	{
+		std::vector<double> vertices = getBoxLocalVertices();
+		applyRotation(vertices);
+		toWorldSpace(vertices);
+		return vertices;
+	}
+
+	std::vector<double> RigidBody::getBoxLocalVertices() const
+	{
+		std::vector<double> vertices =
+		{
+			- m_boxSize.getX() / 2, - m_boxSize.getY() / 2,  - m_boxSize.getZ() / 2,
+			+ m_boxSize.getX() / 2, - m_boxSize.getY() / 2,  - m_boxSize.getZ() / 2,
+			+ m_boxSize.getX() / 2,  + m_boxSize.getY() / 2,  - m_boxSize.getZ() / 2,
+			+ m_boxSize.getX() / 2,  + m_boxSize.getY() / 2,  - m_boxSize.getZ() / 2,
+			- m_boxSize.getX() / 2,  + m_boxSize.getY() / 2,  - m_boxSize.getZ() / 2,
+			- m_boxSize.getX() / 2,  - m_boxSize.getY() / 2,  - m_boxSize.getZ() / 2,
+
+			- m_boxSize.getX() / 2,  - m_boxSize.getY() / 2,  + m_boxSize.getZ() / 2,
+			+ m_boxSize.getX() / 2,  - m_boxSize.getY() / 2,  + m_boxSize.getZ() / 2,
+			+ m_boxSize.getX() / 2,  + m_boxSize.getY() / 2,  + m_boxSize.getZ() / 2,
+			+ m_boxSize.getX() / 2,  + m_boxSize.getY() / 2,  + m_boxSize.getZ() / 2,
+			- m_boxSize.getX() / 2,  + m_boxSize.getY() / 2,  + m_boxSize.getZ() / 2,
+			- m_boxSize.getX() / 2,  - m_boxSize.getY() / 2,  + m_boxSize.getZ() / 2,
+
+			- m_boxSize.getX() / 2,  + m_boxSize.getY() / 2,  + m_boxSize.getZ() / 2,
+			- m_boxSize.getX() / 2,  + m_boxSize.getY() / 2,  - m_boxSize.getZ() / 2,
+			- m_boxSize.getX() / 2,  - m_boxSize.getY() / 2,  - m_boxSize.getZ() / 2,
+			- m_boxSize.getX() / 2,  - m_boxSize.getY() / 2,  - m_boxSize.getZ() / 2,
+			- m_boxSize.getX() / 2,  - m_boxSize.getY() / 2,  + m_boxSize.getZ() / 2,
+			- m_boxSize.getX() / 2,  + m_boxSize.getY() / 2,  + m_boxSize.getZ() / 2,
+
+			+ m_boxSize.getX() / 2,  + m_boxSize.getY() / 2,  + m_boxSize.getZ() / 2,
+			+ m_boxSize.getX() / 2,  + m_boxSize.getY() / 2,  - m_boxSize.getZ() / 2,
+			+ m_boxSize.getX() / 2,  - m_boxSize.getY() / 2,  - m_boxSize.getZ() / 2,
+			+ m_boxSize.getX() / 2,  - m_boxSize.getY() / 2,  - m_boxSize.getZ() / 2,
+			+ m_boxSize.getX() / 2,  - m_boxSize.getY() / 2,  + m_boxSize.getZ() / 2,
+			+ m_boxSize.getX() / 2,  + m_boxSize.getY() / 2,  + m_boxSize.getZ() / 2,
+
+			- m_boxSize.getX() / 2,  - m_boxSize.getY() / 2,  - m_boxSize.getZ() / 2,
+			+ m_boxSize.getX() / 2,  - m_boxSize.getY() / 2,  - m_boxSize.getZ() / 2,
+			+ m_boxSize.getX() / 2,  - m_boxSize.getY() / 2,  + m_boxSize.getZ() / 2,
+			+ m_boxSize.getX() / 2,  - m_boxSize.getY() / 2,  + m_boxSize.getZ() / 2,
+			- m_boxSize.getX() / 2,  - m_boxSize.getY() / 2,  + m_boxSize.getZ() / 2,
+			- m_boxSize.getX() / 2,  - m_boxSize.getY() / 2,  - m_boxSize.getZ() / 2,
+
+			- m_boxSize.getX() / 2,  + m_boxSize.getY() / 2,  - m_boxSize.getZ() / 2,
+			+ m_boxSize.getX() / 2,  + m_boxSize.getY() / 2,  - m_boxSize.getZ() / 2,
+			+ m_boxSize.getX() / 2,  + m_boxSize.getY() / 2,  + m_boxSize.getZ() / 2,
+			+ m_boxSize.getX() / 2,  + m_boxSize.getY() / 2,  + m_boxSize.getZ() / 2,
+			- m_boxSize.getX() / 2,  + m_boxSize.getY() / 2,  + m_boxSize.getZ() / 2,
+			- m_boxSize.getX() / 2,  + m_boxSize.getY() / 2,  - m_boxSize.getZ() / 2,
+		};
+		return vertices;
+	}
+
+	void RigidBody::toWorldSpace(std::vector<double>& vertices) const
+	{
+		for (unsigned int i = 0; i < vertices.size() - 2; i += 3)
+		{
+			vertices[i] += m_position.getX();
+			vertices[i + 1] += m_position.getY();
+			vertices[i + 2] += m_position.getZ();
+		}
+	}
+
+	void RigidBody::applyRotation(std::vector<double>& vertices) const
+	{
+		Matrix3 orientationMatrix(m_orientation);
+		for (unsigned int i = 0; i < vertices.size() - 2; i += 3)
+		{
+			physicslib::Vector3 vertex(vertices.at(i), vertices.at(i + 1), vertices.at(i + 2));
+			vertex = orientationMatrix * vertex;
+			vertices[i] = vertex.getX();
+			vertices[i + 1] = vertex.getY();
+			vertices[i + 2] = vertex.getZ();
+		}
 	}
 
 	#pragma region Getters/Setters

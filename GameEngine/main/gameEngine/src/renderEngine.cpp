@@ -1,8 +1,15 @@
 #include "../include/renderEngine.hpp"
 
-RenderEngine::RenderEngine(): m_openGlWrapper(SCR_WIDTH, SCR_HEIGHT, WINDOW_TITLE), m_mainWindow(m_openGlWrapper.getMainWindow())
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+RenderEngine::RenderEngine() : m_openGlWrapper(SCR_WIDTH, SCR_HEIGHT, WINDOW_TITLE), m_mainWindow(m_openGlWrapper.getMainWindow())
 {
-	// Register particle shader
+	// Enable depth testing
+	glEnable(GL_DEPTH_TEST);
+
+	// Register shader
 	opengl_wrapper::Shader defaultShader;
 	defaultShader.loadFromFile("resources/shaders/particle.vs", "resources/shaders/particle.fs");
 	m_shaderPrograms.insert(std::make_pair(ShaderProgramType::ST_DEFAULT, defaultShader));
@@ -12,9 +19,17 @@ void RenderEngine::render()
 {
 	// cleaning screen
 	m_openGlWrapper.clearCurrentWindow();
+	m_openGlWrapper.clearDepthBuffer();
 
 	// drawings
-	draw();
+	std::vector< physicslib::RigidBody> bodies;
+	physicslib::RigidBody body(10.0, 0.0, physicslib::Vector3(5, 5, 5), physicslib::Vector3(), physicslib::Vector3(), 
+		physicslib::Vector3(), physicslib::Quaternion( cos(3.14/8), 0, 0, sin(3.14/8) ));
+	bodies.push_back(body);
+	physicslib::RigidBody body2(10.0, 0.0, physicslib::Vector3(5, 5, 5), physicslib::Vector3(10,0,0), physicslib::Vector3(),
+		physicslib::Vector3(), physicslib::Quaternion(cos(3.14 / 8), 0, 0, sin(3.14 / 8)));
+	bodies.push_back(body2);
+	draw(bodies);
 
 	// swapping the double buffers
 	m_openGlWrapper.swapGraphicalBuffers(m_mainWindow);
@@ -30,27 +45,38 @@ GLFWwindow* const RenderEngine::getMainWindow() const
 	return m_mainWindow;
 }
 
-void RenderEngine::draw()
+void RenderEngine::draw(std::vector<physicslib::RigidBody> bodies)
 {
-	if (res)
+	opengl_wrapper::Shader currentShader = m_shaderPrograms.at(ST_DEFAULT);
+	currentShader.use();
+
+	std::vector<double> vertices;
+	for (auto body : bodies)
 	{
-		std::vector<double> vertices = {
-			 0.5f,  0.5f, 0.0f,  // top right
-			 0.5f, -0.5f, 0.0f,  // bottom right
-			-0.5f, -0.5f, 0.0f,  // bottom left
-			-0.5f,  0.5f, 0.0f   // top left 
-		};
-		std::vector<unsigned int>indices = {  // note that we start from 0!
-			0, 1, 3,  // first Triangle
-			1, 2, 3   // second Triangle
-		};
-		m_openGlWrapper.createAndBindDataBuffers(vertices, indices);
+		std::vector<double> bodyVertices = body.getBoxVertices();
+		vertices.insert(vertices.end(), bodyVertices.begin(), bodyVertices.end());
+	};
+	std::tuple<unsigned int, unsigned int> openGlBuffers = m_openGlWrapper.createAndBindDataBuffer(vertices);
 
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-		// draw our first triangle
-		m_shaderPrograms.at(ST_DEFAULT).use();
-		res = false;
-	}
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	// Model matrix
+	glm::mat4 model = glm::mat4(1.0f);
+	currentShader.setUniform("model", glm::value_ptr(model));
+
+	// View matrix
+	glm::mat4 view = glm::mat4(1.0f);
+	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -20.0f));
+	currentShader.setUniform("view", glm::value_ptr(view));
+
+	// Project matrix
+	glm::mat4 projection;
+	projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+	currentShader.setUniform("projection", glm::value_ptr(projection));
+
+	glDrawArrays(GL_TRIANGLES, 0, vertices.size()/ 3);
+	m_openGlWrapper.cleanAndDeleteDataBuffers(openGlBuffers);
 }
+
+
 

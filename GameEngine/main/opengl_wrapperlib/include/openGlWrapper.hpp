@@ -53,6 +53,11 @@ namespace opengl_wrapper
 		void clearCurrentWindow(float red = 0.0, float green = 0.0, float blue = 0.0, float opacity = 1.0) const;
 
 		/*
+		 * Clear the depth buffer.
+		 */
+		void clearDepthBuffer() const;
+
+		/*
 		 * Set the function callback for when a key is pressed.
 		 */
 		void setKeyboardCallback(GLFWwindow* window, GLFWkeyfun callbackFunction) const;
@@ -76,8 +81,8 @@ namespace opengl_wrapper
 		 * Create the opengl buffer from the given data.
 		 * Bind the created buffer.
 		 */
-		std::tuple<unsigned int, unsigned int, unsigned int> createAndBindDataBuffers
-			(const std::vector<double>& verticesBuffer, const std::vector<unsigned int>& indicesBuffer) const;
+		std::tuple<unsigned int, unsigned int> createAndBindDataBuffer
+			(const std::vector<double>& verticesBuffer) const;
 
 		/*
 		 * Draw the given shaped count times.
@@ -88,7 +93,7 @@ namespace opengl_wrapper
 		/*
 		 * Clear and free the memory of the opengl buffers corresponding to the given ids.
 		 */
-		void cleanAndDeleteDataBuffers(std::tuple<unsigned int, unsigned int, unsigned int> buffers) const;
+		void cleanAndDeleteDataBuffers(std::tuple<unsigned int, unsigned int> buffers) const;
 
 		/*
 		 * Close the main window
