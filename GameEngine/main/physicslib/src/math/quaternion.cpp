@@ -4,82 +4,117 @@
 #include "math/vector3.hpp"
 namespace physicslib
 {
-	Quaternion::Quaternion() {};
-
-
-	Quaternion::Quaternion(double r, physicslib::Vector3 vector)
+	Quaternion::Quaternion()
+		: m_r(1.)
+		, m_i(0.)
+		, m_j(0.)
+		, m_k(0.)
 	{
-		m_r = r;
-		m_i = vector.getX();
-		m_j = vector.getY();
-		m_k = vector.getZ();
 	}
 
 	Quaternion::Quaternion(double r, double i, double j, double k)
+		: m_r(r)
+		, m_i(i)
+		, m_j(j)
+		, m_k(k)
 	{
-		m_r = r;
-		m_i = i;
-		m_j = j;
-		m_k = k;
 	}
 
+	Quaternion::Quaternion(double r, physicslib::Vector3 vector)
+		: m_r(r)
+		, m_i(vector.getX())
+		, m_j(vector.getY())
+		, m_k(vector.getZ())
+	{
+	}
 
+	// ----------------------------------
+	// Quaternion mathematical operations
+	// ----------------------------------
 	Quaternion Quaternion::operator-() const
 	{
 		return Quaternion(-m_r, -m_i, -m_j, -m_k);
 	}
 
-	Quaternion& Quaternion::operator *=(double scalar)
+	Quaternion& Quaternion::operator*=(const Quaternion& anotherQuaternion)
+	{
+		m_r = (m_r * anotherQuaternion.m_r) - (m_i * anotherQuaternion.m_i) - (m_j * anotherQuaternion.m_j) - (m_k * anotherQuaternion.m_k);
+		m_i = (m_r * anotherQuaternion.m_i) + (anotherQuaternion.m_r * m_i) + (m_j * anotherQuaternion.m_k) - (m_k * anotherQuaternion.m_j);
+		m_j = (m_r * anotherQuaternion.m_j) + (anotherQuaternion.m_r * m_j) + (m_k * anotherQuaternion.m_i) - (m_i * anotherQuaternion.m_k);
+		m_k = (m_r * anotherQuaternion.m_k) + (anotherQuaternion.m_r * m_k) + (m_i * anotherQuaternion.m_j) - (m_j * anotherQuaternion.m_i);
+
+		return *this;
+	}
+
+	Quaternion Quaternion::operator*(const Quaternion& anotherQuaternion) const
+	{
+		Quaternion newQuaternion(*this);
+		newQuaternion *= anotherQuaternion;
+
+		return newQuaternion;
+	}
+
+	Quaternion& Quaternion::operator+=(const Quaternion& anotherQuaternion)
+	{
+		m_r += anotherQuaternion.m_r;
+		m_i += anotherQuaternion.m_i;
+		m_j += anotherQuaternion.m_j;
+		m_k += anotherQuaternion.m_k;
+
+		return *this;
+	}
+
+	Quaternion Quaternion::operator+(const Quaternion& anotherQuaternion) const
+	{
+		Quaternion newQuaternion(*this);
+		newQuaternion += anotherQuaternion;
+
+		return newQuaternion;
+	}
+
+	Quaternion& Quaternion::operator*=(double scalar)
 	{
 		m_r *= scalar;
 		m_i *= scalar;
 		m_j *= scalar;
 		m_k *= scalar;
+
 		return *this;
 	}
 
-	Quaternion& Quaternion::operator *=(const Quaternion& anotherQuaternion)
-	{	// this might be bugged ??? xD
-		double r = m_r * anotherQuaternion.getR() - m_i * anotherQuaternion.getI() - m_j * anotherQuaternion.getJ() - m_k * anotherQuaternion.getK();
-		double i = m_r * anotherQuaternion.getI() + m_i * anotherQuaternion.getR() + m_j * anotherQuaternion.getK() - m_k * anotherQuaternion.getJ();
-		double j = m_r * anotherQuaternion.getJ() + m_j * anotherQuaternion.getR() + m_k * anotherQuaternion.getI() - m_i * anotherQuaternion.getK();
-		double k = m_r * anotherQuaternion.getK() + m_k * anotherQuaternion.getR() + m_i * anotherQuaternion.getJ() - m_j * anotherQuaternion.getI();
-		this->m_r = r;
-		this->m_i = i;
-		this->m_j = j;
-		this->m_k = k;
-		return *this;
+	Quaternion operator*(const Quaternion& quaternion, double scalar)
+	{
+		Quaternion newQuaternion(quaternion);
+		newQuaternion *= scalar;
+
+		return newQuaternion;
 	}
 
-	Quaternion Quaternion::operator*(double scalar) const
+	Quaternion operator*(double scalar, const Quaternion& quaternion)
 	{
-		return Quaternion(m_r * scalar, m_i * scalar, m_j * scalar, m_k * scalar);
+		return quaternion * scalar;
 	}
 
-	Quaternion Quaternion::operator*(const Quaternion& anotherQuaternion) const
+	double Quaternion::ScalarProduct(Quaternion const& anotherQuaternion) const
 	{
-		double r = m_r * anotherQuaternion.getR() - m_i * anotherQuaternion.getI() - m_j * anotherQuaternion.getJ() - m_k * anotherQuaternion.getK();
-		double i = m_r * anotherQuaternion.getI() + m_i * anotherQuaternion.getR() + m_j * anotherQuaternion.getK() - m_k * anotherQuaternion.getJ();
-		double j = m_r * anotherQuaternion.getJ() + m_j * anotherQuaternion.getR() + m_k * anotherQuaternion.getI() - m_i * anotherQuaternion.getK();
-		double k = m_r * anotherQuaternion.getK() + m_k * anotherQuaternion.getR() + m_i * anotherQuaternion.getJ() - m_j * anotherQuaternion.getI();
-		return Quaternion(r, i, j, k);
+		return (m_r * anotherQuaternion.m_r) + (m_i * anotherQuaternion.m_i) + (m_j * anotherQuaternion.m_j) + (m_k * anotherQuaternion.m_k);
 	}
 
-	void Quaternion::doRotation(Vector3 vector)
+	void Quaternion::rotate(Vector3 vector)
 	{
-		Quaternion q(0, vector.getX(), vector.getY(), vector.getZ());
-		//q = (&this)*q;
-		//do something else ? 
+		Quaternion q(0., vector);
+		(*this) *= q;
 	}
 
-	void Quaternion::updateAngularVelocity(Vector3 vector, double frametime)
+	void Quaternion::updateAngularVelocity(Vector3 vector, double frameTime)
 	{
-
+		Quaternion omega(0., vector);
+		(*this) += frameTime / 2. * omega * (*this);
 	}
 
 	double Quaternion::getNorm() const
 	{
-		return pow(getSquaredNorm(), 0.5);
+		return sqrt(getSquaredNorm());
 	}
 
 	double Quaternion::getSquaredNorm() const
@@ -87,18 +122,26 @@ namespace physicslib
 		return m_r * m_r + m_i * m_i + m_j * m_j + m_k * m_k;
 	}
 
-	Quaternion Quaternion::getNormalizedQuaternion() const
+	void Quaternion::normalize()
 	{
 		double squaredNorm = getSquaredNorm();
 		if (squaredNorm == 0)
 		{
-			return Quaternion(1, 0, 0, 0);
+			(*this) = Quaternion(1., 0., 0., 0.);
+			return;
 		}
-		//else
-		squaredNorm = 1.0 / pow(squaredNorm, 0.5);
-		return Quaternion(m_r * squaredNorm, m_i * squaredNorm, m_j * squaredNorm, m_k * squaredNorm);
+		
+		squaredNorm = 1. / sqrt(squaredNorm);
+		(*this) *= squaredNorm;
 	}
 
+	Quaternion Quaternion::getNormalizedQuaternion() const
+	{
+		Quaternion newQuaternion(*this);
+		newQuaternion.normalize();
+
+		return newQuaternion;
+	}
 
 	std::string Quaternion::toString() const
 	{
@@ -107,6 +150,4 @@ namespace physicslib
 			" ; j = " + std::to_string(m_j) + 
 			" ; k = " + std::to_string(m_k) + ")");
 	}
-
-
 }
