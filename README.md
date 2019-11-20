@@ -42,7 +42,7 @@ The next steps depend on your environment but you should be able to:
 
 ### Running
 
-While the program is running, press A to generate a blob : an entity made of particles linked together with spring forces, these links comport lire rods when the elasticity limit is exceeded. The first blob generated can be controlled using keyboard arrows. Pressing Q splits the controlled blob in two separated parts, and pressing S reunites all blobs' particles into a big one.
+While the program is running, press E to create a single rigid body with a non null linear and angular velocity. Press R to create 2 rigid bodies that are going to collide one onto the other; after the collision, we can notice their rotations. Press E or R deletes the already existing rigid bodies (to avoid unwanted collisions).
 
 ## Authors
 
