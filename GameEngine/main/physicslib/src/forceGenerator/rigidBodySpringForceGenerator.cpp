@@ -10,12 +10,8 @@ namespace physicslib
 
 	void RigidBodySpringForceGenerator::updateForce(std::shared_ptr<RigidBody> rigidBody, const double duration) const
 	{
-		// Convert both extrimity coordinates to worldSpace
-		Vector3 worldExtremity1(rigidBody->getPosition() + m_extremity1);
-		Vector3 worldExtremity2(m_otherRigidBody->getPosition() + m_extremity2);
-
 		// Compute spring length
-		Vector3 d = worldExtremity1 - worldExtremity2;
+		Vector3 d = m_extremity1 - m_extremity2;
 
 		// Apply Force
 		rigidBody->addForceAtPoint(d.getNormalizedVector() * (-m_elasticity) * (d.getNorm() - m_restingLength), m_extremity1);

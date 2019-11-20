@@ -5,10 +5,10 @@
 
 namespace physicslib
 {
-	class GravityForceGenerator : public ParticleForceGenerator
+	class RigidBodyGravityForceGenerator : public RigidBodyForceGenerator
 	{
 		public:
-			GravityForceGenerator(Vector3 gravity);
+			RigidBodyGravityForceGenerator(Vector3 gravity);
 
 			void updateForce(std::shared_ptr<RigidBody> rigidBody, const double duration) const override;
 
