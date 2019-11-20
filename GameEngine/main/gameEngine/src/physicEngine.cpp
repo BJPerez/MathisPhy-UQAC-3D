@@ -2,7 +2,6 @@
 
 PhysicEngine::PhysicEngine()
 {
-
 }
 
 void PhysicEngine::update(std::vector<physicslib::RigidBody>& rigidBodies, const double frametime)
