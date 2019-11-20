@@ -38,7 +38,7 @@ private:
 	 * Each shaderprogram represents a combinaison of one fragment shader and a
 	 * vertex shader linked in one shader program.
 	 */
-	enum ShaderProgramType
+	enum class ShaderProgramType
 	{
 		ST_DEFAULT
 	};

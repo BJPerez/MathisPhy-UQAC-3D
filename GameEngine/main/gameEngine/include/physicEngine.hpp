@@ -2,6 +2,7 @@
 
 #include "forceGenerator/forceRegister.hpp"
 #include "collisions/contactRegister.hpp"
+#include "rigidBody.hpp"
 
 /*
  * This class represents the physic engine and implements all the functions 
@@ -19,7 +20,7 @@ public:
 	 * Realizes a whole loop of the physic engine. 
 	 * Generates all forces, applies them to objects and detects and resolves collisions.
 	 */
-	void update(const double deltaTime);
+	void update(std::vector<physicslib::RigidBody>& rigidBodies, const double deltaTime);
 
 private:
 	physicslib::ForceRegister m_forceRegister; // The register containing all forces associated with the object they're applied to.

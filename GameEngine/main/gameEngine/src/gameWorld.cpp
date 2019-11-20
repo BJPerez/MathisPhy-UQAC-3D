@@ -12,6 +12,8 @@ GameWorld::GameWorld(): m_mainWindow(m_renderEngine.getMainWindow())
 
 	// Game variables
 	glfwSetWindowUserPointer(m_mainWindow, &m_inputsManager); //save the manager's pointer to the window to be able to access it in the inputs callback function
+
+	initializeRigidBodies();
 }
 
 void GameWorld::run()
@@ -30,23 +32,34 @@ void GameWorld::run()
 
 		// logic
 		processInputs(pendingIntentions);
-		m_physicEngine.update(frametime);
+		m_physicEngine.update(m_rigidBodies, frametime);
 
 		// render
-		std::vector< physicslib::RigidBody> bodies;
-		physicslib::RigidBody body(10.0, 0.0, physicslib::Vector3(5, 5, 5), physicslib::Vector3(), physicslib::Vector3(),
-			physicslib::Vector3(), physicslib::Quaternion(cos(3.14 / 8), 0, 0, sin(3.14 / 8)));
-		bodies.push_back(body);
-		physicslib::RigidBody body2(10.0, 0.0, physicslib::Vector3(5, 5, 5), physicslib::Vector3(10, 0, 0), physicslib::Vector3(),
-			physicslib::Vector3(), physicslib::Quaternion(cos(3.14 / 8), 0, 0, sin(3.14 / 8)));
-		bodies.push_back(body2);
-		m_renderEngine.render(bodies);
+		m_renderEngine.render(m_rigidBodies);
 
 		// manage frame time
 		auto end(std::chrono::system_clock::now());
 		std::chrono::duration<double> elapsedSeconds = end - start;
 		frametime = elapsedSeconds.count();//update frametime using last frame
 	}
+}
+
+void GameWorld::initializeRigidBodies()
+{
+	physicslib::RigidBody BoxRigidBody(
+		0., 0.9, physicslib::Vector3(5, 5, 5),
+		physicslib::Vector3(), physicslib::Vector3(), physicslib::Vector3(),
+		physicslib::Quaternion(cos(3.14 / 8), 0, 0, sin(3.14 / 8)), physicslib::Vector3(100, 0, 0)
+	);
+
+	physicslib::RigidBody BoxRigidBody2(
+		10., 0.9, physicslib::Vector3(5, 2, 3),
+		physicslib::Vector3(2, 0, 0), physicslib::Vector3(0, 0, -1), physicslib::Vector3(),
+		physicslib::Quaternion(cos(3.14 / 8), 0, 0, sin(3.14 / 8))
+	);
+
+	m_rigidBodies.push_back(BoxRigidBody);
+	m_rigidBodies.push_back(BoxRigidBody2);
 }
 
 std::vector<InputsManager::Intention> GameWorld::getPendingIntentions()

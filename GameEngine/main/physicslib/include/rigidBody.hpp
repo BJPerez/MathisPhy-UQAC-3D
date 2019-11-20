@@ -23,16 +23,6 @@ namespace physicslib
 
 		/**
 		 * Constructor
-		 * Create a spheric-shaped rigidBody
-		 */
-		RigidBody(
-			const double mass, const double angularDamping, const double radius,
-			const Vector3 initialPosition = Vector3(), const Vector3 initialVelocity = Vector3(), const Vector3 initialAcceleration = Vector3(),
-			const Quaternion initialOrientation = Quaternion(), const Vector3 initialRotation = Vector3(), const Vector3 initialAngularAcceleration = Vector3()
-		);
-
-		/**
-		 * Constructor
 		 * Create a irregular-shaped rigidBody
 		 */
 		RigidBody(

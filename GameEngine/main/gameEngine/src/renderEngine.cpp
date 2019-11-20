@@ -1,5 +1,6 @@
 #include "../include/renderEngine.hpp"
 
+#include <iostream>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -40,7 +41,7 @@ GLFWwindow* const RenderEngine::getMainWindow() const
 
 void RenderEngine::draw(const std::vector<physicslib::RigidBody>& bodies)
 {
-	opengl_wrapper::Shader currentShader = m_shaderPrograms.at(ST_DEFAULT);
+	opengl_wrapper::Shader currentShader = m_shaderPrograms.at(ShaderProgramType::ST_DEFAULT);
 	currentShader.use();
 
 	std::vector<double> vertices;
