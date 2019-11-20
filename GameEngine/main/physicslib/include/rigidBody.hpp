@@ -107,7 +107,8 @@ namespace physicslib
 
 		// Computed data
 		physicslib::Matrix3 m_transformMatrix;
-		physicslib::Matrix3 m_inverseInertiaTensor;
+		physicslib::Matrix3 m_localInverseInertiaTensor;
+		physicslib::Matrix3 m_globalInverseInertiaTensor;
 
 		/*
 		 * Get the vertices of the cube representing the rigid body.

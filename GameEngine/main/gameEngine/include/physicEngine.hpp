@@ -39,5 +39,5 @@ private:
 	/*
 	 * Function that detects all the contacts between objects and add them in the contacts register.
 	 */
-	void detectContacts();
+	void detectContacts(std::vector<std::shared_ptr<physicslib::RigidBody>>& rigidBodies);
 };

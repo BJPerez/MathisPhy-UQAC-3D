@@ -1,5 +1,7 @@
 #include "../include/physicEngine.hpp"
 
+#include "math/vector3.hpp"
+
 PhysicEngine::PhysicEngine()
 {
 }
@@ -19,7 +21,7 @@ void PhysicEngine::update(std::vector<std::shared_ptr<physicslib::RigidBody>>& r
 	}
 
 	// look for collisions and resolve them
-	detectContacts();
+	detectContacts(rigidBodies);
 	m_contactRegister.resolveContacts(frametime);
 
 	// clean registers
@@ -36,6 +38,13 @@ void PhysicEngine::generateAllForces(std::vector<std::shared_ptr<physicslib::Rig
 	}
 }
 
-void PhysicEngine::detectContacts()
+void PhysicEngine::detectContacts(std::vector<std::shared_ptr<physicslib::RigidBody>>& rigidBodies)
 {
+	if (abs(rigidBodies[0]->getPosition().getX() - rigidBodies[1]->getPosition().getX()) < 10)
+	{
+		rigidBodies[0]->setVelocity(-rigidBodies[0]->getVelocity() * 0.9);
+		rigidBodies[1]->setVelocity(-rigidBodies[1]->getVelocity() * 0.9);
+		rigidBodies[0]->addForceAtBodyPoint(physicslib::Vector3(-100, 0, 100), physicslib::Vector3(15, 0, 15));
+		rigidBodies[1]->addForceAtBodyPoint(physicslib::Vector3(100, 0, -100), physicslib::Vector3(-15, 0, -15));
+	}
 }

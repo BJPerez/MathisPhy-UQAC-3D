@@ -20,10 +20,11 @@ namespace physicslib
 		, m_boxSize(boxSize)
 	{
 		// Hardcoded box inertia tensor
-		m_inverseInertiaTensor = Matrix3({
-			(boxSize.getY() * boxSize.getY() + boxSize.getZ() * boxSize.getZ()) * mass / 12., 0, 0,
-			0, (boxSize.getX() * boxSize.getX() + boxSize.getZ() * boxSize.getZ()) * mass / 12., 0,
-			0, 0, (boxSize.getX() * boxSize.getX() + boxSize.getZ() * boxSize.getZ()) * mass / 12.
+		double k = mass / 12.;
+		m_localInverseInertiaTensor = Matrix3({
+			k * (boxSize.getY() * boxSize.getY() + boxSize.getZ() * boxSize.getZ()), 0, 0,
+			0, k * (boxSize.getX() * boxSize.getX() + boxSize.getZ() * boxSize.getZ()), 0,
+			0, 0, k * (boxSize.getX() * boxSize.getX() + boxSize.getY() * boxSize.getY())
 		}).getReverseMatrix();
 	}
 
@@ -69,13 +70,13 @@ namespace physicslib
 			yzInertia += mass * yScalarProduct * zScalarProduct;
 		}
 
-		m_inverseInertiaTensor = Matrix3({
+		m_localInverseInertiaTensor = Matrix3({
 			xInertia, -xyInertia, -xzInertia,
 			-xyInertia, yInertia, -yzInertia,
 			-xzInertia, -yzInertia, zInertia
 		});
-		m_inverseInertiaTensor /= points.size();
-		m_inverseInertiaTensor.reverse();
+		m_localInverseInertiaTensor /= points.size();
+		m_localInverseInertiaTensor.reverse();
 	}
 
 	void RigidBody::integrate(double frameTime)
@@ -86,11 +87,9 @@ namespace physicslib
 		m_position = m_position + m_velocity * frameTime;
 
 		// Orientation update
-		m_angularAcceleration = m_inverseInertiaTensor * m_torqueAccumulator;
+		m_angularAcceleration = m_globalInverseInertiaTensor * m_torqueAccumulator;
 		m_angularVelocity = m_angularVelocity * pow(m_angularDamping, frameTime) + m_angularAcceleration * frameTime;
 		m_orientation.updateOrientation(m_angularVelocity, frameTime);
-
-		std::cout << "angular velocity: " << m_angularVelocity.toString() << std::endl;
 		
 		computeDerivedData();
 		clearAccumulators();
@@ -98,18 +97,18 @@ namespace physicslib
 
 	void RigidBody::computeDerivedData()
 	{
-		// TO VERIFY
 		m_transformMatrix = Matrix3(m_orientation);
-		std::cout << (m_orientation).toString() << std::endl;
-		std::cout << m_transformMatrix.toString() << std::endl;
 
-		m_inverseInertiaTensor = m_transformMatrix * m_inverseInertiaTensor * m_transformMatrix.getReverseMatrix();
+		m_globalInverseInertiaTensor = m_transformMatrix * m_localInverseInertiaTensor * m_transformMatrix.getReverseMatrix();
+
+		std::cout << m_globalInverseInertiaTensor.toString() << std::endl;
 	}
 
 	void RigidBody::addForceAtPoint(const Vector3& force, const Vector3& point)
 	{
 		// Convert point to coordinates relative to the center-of-mass
-		Vector3 localPoint = point.worldToLocal(m_transformMatrix);
+		Vector3 localPoint = point - m_position;
+		localPoint = localPoint.worldToLocal(m_transformMatrix);
 
 		m_forceAccumulator += force;
 		m_torqueAccumulator += localPoint.CrossProduct(force);
@@ -119,6 +118,7 @@ namespace physicslib
 	{
 		// Convert point to coordinates relative to the world
 		Vector3 worldPoint = point.localToWorld(m_transformMatrix);
+		worldPoint += m_position;
 
 		addForceAtPoint(force, worldPoint);
 	}
