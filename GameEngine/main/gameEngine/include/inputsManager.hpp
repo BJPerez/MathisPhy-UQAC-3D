@@ -18,6 +18,8 @@ public:
 	enum Intention
 	{
 		CLOSE_MAIN_WINDOW,
+		CREATE_SINGLE_BOX,
+		CREATE_TWO_BOXES,
 	};
 
 	/*
