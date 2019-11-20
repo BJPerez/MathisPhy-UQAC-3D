@@ -58,7 +58,7 @@ namespace physicslib
 		/**
 		 * Update the orientation quaternion by the angular velocity
 		 */
-		void updateAngularVelocity(Vector3 vector, double frameTime);
+		void updateOrientation(Vector3 vector, double frameTime);
 
 		/**
 		 * Get the norm of the quaternion

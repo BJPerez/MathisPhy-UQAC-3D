@@ -106,7 +106,7 @@ namespace physicslib
 		(*this) *= q;
 	}
 
-	void Quaternion::updateAngularVelocity(Vector3 vector, double frameTime)
+	void Quaternion::updateOrientation(Vector3 vector, double frameTime)
 	{
 		Quaternion omega(0., vector);
 		(*this) += frameTime / 2. * omega * (*this);

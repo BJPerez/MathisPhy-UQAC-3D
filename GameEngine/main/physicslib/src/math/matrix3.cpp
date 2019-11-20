@@ -57,6 +57,12 @@ namespace physicslib
 			return;
 		}
 
+		/*if (determinant == 1. || determinant == -1.)
+		{
+			transpose();
+			return;
+		}*/
+
 		*this = {
 			(*this)(1, 1) * (*this)(2, 2) - (*this)(1, 2) * (*this)(2, 1),
 			(*this)(0, 2) * (*this)(2, 1) - (*this)(0, 1) * (*this)(2, 2),

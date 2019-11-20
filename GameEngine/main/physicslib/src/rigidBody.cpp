@@ -20,12 +20,85 @@ namespace physicslib
 		, m_angularAcceleration(initialAngularAcceleration)
 		, m_boxSize(boxSize)
 	{
-		// Hardcoded 1x1x1 box inertia tensor
+		// Hardcoded box inertia tensor
 		m_inverseInertiaTensor = Matrix3({
 			(boxSize.getY() * boxSize.getY() + boxSize.getZ() * boxSize.getZ()) * mass / 12., 0, 0,
 			0, (boxSize.getX() * boxSize.getX() + boxSize.getZ() * boxSize.getZ()) * mass / 12., 0,
 			0, 0, (boxSize.getX() * boxSize.getX() + boxSize.getZ() * boxSize.getZ()) * mass / 12.
 		}).getReverseMatrix();
+	}
+
+	RigidBody::RigidBody(
+		const double mass, const double angularDamping, const double radius,
+		const Vector3 initialPosition, const Vector3 initialVelocity, const Vector3 initialAcceleration,
+		const Quaternion initialOrientation, const Vector3 initialRotation, const Vector3 initialAngularAcceleration
+	)
+		: m_inverseMass(1. / mass)
+		, m_angularDamping(angularDamping)
+		, m_position(initialPosition)
+		, m_velocity(initialVelocity)
+		, m_acceleration(initialAcceleration)
+		, m_orientation(initialOrientation)
+		, m_rotation(initialRotation)
+		, m_angularAcceleration(initialAngularAcceleration)
+	{
+		// Hardcoded spheric inertia tensor
+		m_inverseInertiaTensor = Matrix3({
+			2. * mass * radius * radius / 5., 0, 0,
+			0, 2. * mass * radius * radius / 5., 0,
+			0, 0, 2. * mass * radius * radius / 5.
+		}).getReverseMatrix();
+	}
+
+	RigidBody::RigidBody(
+		const double mass, const double angularDamping, const std::vector<Vector3>& points,
+		const Vector3 initialPosition, const Vector3 initialVelocity, const Vector3 initialAcceleration,
+		const Quaternion initialOrientation, const Vector3 initialRotation, const Vector3 initialAngularAcceleration
+	)
+		: m_inverseMass(1. / mass)
+		, m_angularDamping(angularDamping)
+		, m_position(initialPosition)
+		, m_velocity(initialVelocity)
+		, m_acceleration(initialAcceleration)
+		, m_orientation(initialOrientation)
+		, m_rotation(initialRotation)
+		, m_angularAcceleration(initialAngularAcceleration)
+	{
+		Vector3 xAxis = Vector3(1, 0, 0);
+		Vector3 yAxis = Vector3(0, 1, 0);
+		Vector3 zAxis = Vector3(0, 0, 1);
+
+		double xInertia = 0.;
+		double yInertia = 0.;
+		double zInertia = 0.;
+
+		double xyInertia = 0.;
+		double yzInertia = 0.;
+		double xzInertia = 0.;
+		for (Vector3 point : points)
+		{
+			double xScalarProduct = (point - m_position).ScalarProduct(xAxis);
+			double yScalarProduct = (point - m_position).ScalarProduct(yAxis);
+			double zScalarProduct = (point - m_position).ScalarProduct(zAxis);
+
+			// Compute moment of inertia
+			xInertia += mass * (yScalarProduct * yScalarProduct + zScalarProduct * zScalarProduct);
+			yInertia += mass * (xScalarProduct * xScalarProduct + zScalarProduct * zScalarProduct);
+			zInertia += mass * (xScalarProduct * xScalarProduct + yScalarProduct * yScalarProduct);
+
+			// Compute inertia product
+			xyInertia += mass * xScalarProduct * yScalarProduct;
+			xzInertia += mass * xScalarProduct * zScalarProduct;
+			yzInertia += mass * yScalarProduct * zScalarProduct;
+		}
+
+		m_inverseInertiaTensor = Matrix3({
+			xInertia, -xyInertia, -xzInertia,
+			-xyInertia, yInertia, -yzInertia,
+			-xzInertia, -yzInertia, zInertia
+		});
+		m_inverseInertiaTensor /= points.size();
+		m_inverseInertiaTensor.reverse();
 	}
 
 	void RigidBody::integrate(double frameTime)
@@ -34,12 +107,11 @@ namespace physicslib
 		m_acceleration = m_forceAccumulator;
 		m_velocity = m_velocity + m_acceleration * frameTime;
 		m_position = m_position + m_velocity * frameTime;
-		
 
 		// Orientation update
 		m_angularAcceleration = m_inverseInertiaTensor * m_torqueAccumulator;
 		m_rotation = m_rotation * pow(m_angularDamping, frameTime) + m_angularAcceleration * frameTime;
-		m_orientation.updateAngularVelocity(m_rotation, frameTime);
+		m_orientation.updateOrientation(m_rotation, frameTime);
 		
 		computeDerivedData();
 		clearAccumulators();
@@ -48,7 +120,7 @@ namespace physicslib
 	void RigidBody::computeDerivedData()
 	{
 		// TO VERIFY
-		m_transformMatrix = Matrix3(Quaternion(0, m_position) * m_orientation);
+		m_transformMatrix = Matrix3((Quaternion(0, m_position) * m_orientation).getNormalizedQuaternion());
 
 		m_inverseInertiaTensor = m_transformMatrix * m_inverseInertiaTensor * m_transformMatrix.getReverseMatrix();
 	}
@@ -56,7 +128,7 @@ namespace physicslib
 	void RigidBody::addForceAtPoint(const Vector3& force, const Vector3& point)
 	{
 		// Convert point to coordinates relative to the center-of-mass
-		Vector3 localPoint(m_transformMatrix * point);
+		Vector3 localPoint = point.worldToLocal(m_transformMatrix);
 
 		m_forceAccumulator += force;
 		m_torqueAccumulator += localPoint.CrossProduct(force);
@@ -65,7 +137,7 @@ namespace physicslib
 	void RigidBody::addForceAtBodyPoint(const Vector3& force, const Vector3& point)
 	{
 		// Convert point to coordinates relative to the world
-		Vector3 worldPoint(m_transformMatrix.getReverseMatrix() * point);
+		Vector3 worldPoint = point.localToWorld(m_transformMatrix);
 
 		addForceAtPoint(force, worldPoint);
 	}

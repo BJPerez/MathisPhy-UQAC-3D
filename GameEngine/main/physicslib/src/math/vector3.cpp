@@ -1,6 +1,9 @@
+#include "math/vector3.hpp"
+
 #include <iostream>
 #include <math.h>
-#include "math/vector3.hpp"
+#include "math/matrix3.hpp"
+
 namespace physicslib
 {
 	Vector3::Vector3()
@@ -189,11 +192,19 @@ namespace physicslib
 		return newVector;
 	}
 
+	Vector3 Vector3::localToWorld(const Matrix3& transformMatrix) const
+	{
+		return transformMatrix * (*this);
+	}
+
+	Vector3 Vector3::worldToLocal(const Matrix3& transformMatrix) const
+	{
+		return transformMatrix.getReverseMatrix() * (*this);
+	}
+
 	std::string Vector3::toString() const
 	{
 		return("Vector3(x = " + std::to_string(m_x) + " ; y = " + std::to_string(m_y) + " ; z = " + std::to_string(m_z) + ")");
 	}
-
-	
 }
 
