@@ -30,17 +30,10 @@ void GameWorld::run()
 
 		// logic
 		processInputs(pendingIntentions);
-		m_physicEngine.update(frametime);
+		m_physicEngine.update(m_rigidBodies, frametime);
 
 		// render
-		std::vector< physicslib::RigidBody> bodies;
-		physicslib::RigidBody body(10.0, 0.0, physicslib::Vector3(5, 5, 5), physicslib::Vector3(), physicslib::Vector3(),
-			physicslib::Vector3(), physicslib::Quaternion(cos(3.14 / 8), 0, 0, sin(3.14 / 8)));
-		bodies.push_back(body);
-		physicslib::RigidBody body2(10.0, 0.0, physicslib::Vector3(5, 5, 5), physicslib::Vector3(10, 0, 0), physicslib::Vector3(),
-			physicslib::Vector3(), physicslib::Quaternion(cos(3.14 / 8), 0, 0, sin(3.14 / 8)));
-		bodies.push_back(body2);
-		m_renderEngine.render(bodies);
+		m_renderEngine.render(m_rigidBodies);
 
 		// manage frame time
 		auto end(std::chrono::system_clock::now());
@@ -76,13 +69,34 @@ void GameWorld::processIntention(const InputsManager::Intention intention)
 	}
 	if (intention == InputsManager::CREATE_SINGLE_BOX)
 	{
-		//create an object and add them
+		m_rigidBodies.clear();
+
+		std::shared_ptr<physicslib::RigidBody> boxRigidBody = std::make_shared<physicslib::RigidBody>(
+			1., 1., physicslib::Vector3(10, 3, 3),
+			physicslib::Vector3(-30, 0, -1), physicslib::Vector3(15, 20, 0), physicslib::Vector3(),
+			physicslib::Quaternion(1, 0, 0, 0), physicslib::Vector3(1, 1, 1)
+		);
+
+		m_rigidBodies.push_back(boxRigidBody);
 	}
 	if (intention == InputsManager::CREATE_TWO_BOXES)
 	{
-		//eventually delete all rigidbodies ?
-		//create two bodies (made to collide)
-		//add them
+		m_rigidBodies.clear();
+
+		std::shared_ptr<physicslib::RigidBody> boxRigidBody = std::make_shared<physicslib::RigidBody>(
+			1., 1., physicslib::Vector3(10, 3, 3),
+			physicslib::Vector3(-30, 0, -1), physicslib::Vector3(15, 20, 0), physicslib::Vector3(),
+			physicslib::Quaternion(1, 0, 0, 0)
+		);
+
+		std::shared_ptr<physicslib::RigidBody> boxRigidBody2 = std::make_shared<physicslib::RigidBody>(
+			1., 1., physicslib::Vector3(10, 3, 3),
+			physicslib::Vector3(30, 0, 1), physicslib::Vector3(-15, 20, 0), physicslib::Vector3(),
+			physicslib::Quaternion(1, 0, 0, 0)
+		);
+
+		m_rigidBodies.push_back(boxRigidBody);
+		m_rigidBodies.push_back(boxRigidBody2);
 	}
 }
 

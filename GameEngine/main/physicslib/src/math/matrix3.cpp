@@ -287,4 +287,17 @@ namespace physicslib
 	{
 		return 3;
 	}
+
+	std::string Matrix3::toString() const
+	{
+		std::string str = "{ ";
+		for (double n : m_data)
+		{
+			str += std::to_string(n);
+			str += " ";
+		}
+		str += "}";
+
+		return str;
+	}
 }

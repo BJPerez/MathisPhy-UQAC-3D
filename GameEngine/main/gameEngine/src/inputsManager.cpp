@@ -31,11 +31,11 @@ void getUniqueIntentions(GLFWwindow* window, int key, int scancode, int action, 
 	{
 		inputsManager->addIntention(InputsManager::Intention::CLOSE_MAIN_WINDOW);
 	}
-	if (key == GLFW_KEY_A && action == GLFW_PRESS)
+	if (key == GLFW_KEY_E && action == GLFW_PRESS)
 	{
 		inputsManager->addIntention(InputsManager::Intention::CREATE_SINGLE_BOX);
 	}
-	if (key == GLFW_KEY_Z && action == GLFW_PRESS)
+	if (key == GLFW_KEY_R && action == GLFW_PRESS)
 	{
 		inputsManager->addIntention(InputsManager::Intention::CREATE_TWO_BOXES);
 	}

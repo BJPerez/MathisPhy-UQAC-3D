@@ -103,13 +103,16 @@ namespace physicslib
 	void Quaternion::rotate(Vector3 vector)
 	{
 		Quaternion q(0., vector);
-		(*this) *= q;
+		Quaternion q2(q * (*this));
+		*this += q2;
+		normalize();
 	}
 
 	void Quaternion::updateOrientation(Vector3 vector, double frameTime)
 	{
 		Quaternion omega(0., vector);
-		(*this) += frameTime / 2. * omega * (*this);
+		(*this) += (frameTime / 2.) * omega * (*this);
+		normalize();
 	}
 
 	double Quaternion::getNorm() const
