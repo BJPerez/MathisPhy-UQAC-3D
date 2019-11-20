@@ -120,7 +120,7 @@ namespace physicslib
 	void RigidBody::computeDerivedData()
 	{
 		// TO VERIFY
-		m_transformMatrix = Matrix3(Quaternion(0, m_position) * m_orientation);
+		m_transformMatrix = Matrix3((Quaternion(0, m_position) * m_orientation).getNormalizedQuaternion());
 
 		m_inverseInertiaTensor = m_transformMatrix * m_inverseInertiaTensor * m_transformMatrix.getReverseMatrix();
 	}
