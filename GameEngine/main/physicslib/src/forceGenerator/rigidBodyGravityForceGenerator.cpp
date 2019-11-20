@@ -7,6 +7,7 @@ namespace physicslib
 	{
 	}
 
+	/* Apply gravity at the rigidBody's center */
 	void RigidBodyGravityForceGenerator::updateForce(std::shared_ptr<RigidBody> rigidBody, const double duration) const
 	{
 		if (rigidBody->getInverseMass() != 0)

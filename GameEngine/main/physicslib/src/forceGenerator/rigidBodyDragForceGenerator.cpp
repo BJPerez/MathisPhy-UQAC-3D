@@ -8,6 +8,7 @@ namespace physicslib
 	{
 	}
 
+	/* Add drag forces to the center of the rigidBody */
 	void RigidBodyDragForceGenerator::updateForce(std::shared_ptr<RigidBody> rigidBody, const double duration) const
 	{
 		double speedNorm = rigidBody->getVelocity().getNorm();

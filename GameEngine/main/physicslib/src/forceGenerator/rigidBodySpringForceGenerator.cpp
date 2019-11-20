@@ -8,6 +8,7 @@ namespace physicslib
 		: m_extremity1(extremity1), m_extremity2(extremity2), m_otherRigidBody(otherRigidBody), m_elasticity(elasticity), m_restingLength(restingLength)
 	{}
 
+	/* Apply spring forces to rigidBody : the spring is attached to extremity1 on rigidBody and extremity2 on otherRigidBody */
 	void RigidBodySpringForceGenerator::updateForce(std::shared_ptr<RigidBody> rigidBody, const double duration) const
 	{
 		// Compute spring length
