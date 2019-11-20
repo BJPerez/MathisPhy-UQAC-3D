@@ -74,6 +74,16 @@ void GameWorld::processIntention(const InputsManager::Intention intention)
 		const opengl_wrapper::OpenGlWrapper& openGlWrapper = m_renderEngine.getOpenGlWrapper();
 		openGlWrapper.closeMainWindow();
 	}
+	if (intention == InputsManager::CREATE_SINGLE_BOX)
+	{
+		//create an object and add them
+	}
+	if (intention == InputsManager::CREATE_TWO_BOXES)
+	{
+		//eventually delete all rigidbodies ?
+		//create two bodies (made to collide)
+		//add them
+	}
 }
 
 
