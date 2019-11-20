@@ -31,4 +31,9 @@ void getUniqueIntentions(GLFWwindow* window, int key, int scancode, int action, 
 	{
 		inputsManager->addIntention(InputsManager::Intention::CLOSE_MAIN_WINDOW);
 	}
+
+	if (key == GLFW_KEY_G && action == GLFW_PRESS)
+	{
+		inputsManager->addIntention(InputsManager::Intention::GENERATE_GRAVITY);
+	}
 }

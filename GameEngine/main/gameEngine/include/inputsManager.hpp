@@ -17,7 +17,7 @@ public:
 	 */
 	enum Intention
 	{
-		CLOSE_MAIN_WINDOW,
+		CLOSE_MAIN_WINDOW, GENERATE_GRAVITY,
 	};
 
 	/*

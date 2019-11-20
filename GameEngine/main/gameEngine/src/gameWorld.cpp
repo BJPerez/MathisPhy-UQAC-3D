@@ -74,6 +74,10 @@ void GameWorld::processIntention(const InputsManager::Intention intention)
 		const opengl_wrapper::OpenGlWrapper& openGlWrapper = m_renderEngine.getOpenGlWrapper();
 		openGlWrapper.closeMainWindow();
 	}
+
+	if (intention == InputsManager::GENERATE_GRAVITY)
+	{
+	}
 }
 
 

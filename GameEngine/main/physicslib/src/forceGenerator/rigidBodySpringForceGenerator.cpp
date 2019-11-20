@@ -11,8 +11,8 @@ namespace physicslib
 	void RigidBodySpringForceGenerator::updateForce(std::shared_ptr<RigidBody> rigidBody, const double duration) const
 	{
 		// Convert both extrimity coordinates to worldSpace
-		Vector3 worldExtremity1(/*m_transformMatrix.getReverseMatrix() * m_extremity1 */  Vector3(0, 0, 0));
-		Vector3 worldExtremity2(/*m_transformMatrix.getReverseMatrix() * m_extremity2 */ Vector3(0,0,0));
+		Vector3 worldExtremity1(rigidBody->getPosition() + m_extremity1);
+		Vector3 worldExtremity2(m_otherRigidBody->getPosition() + m_extremity2);
 
 		// Compute spring length
 		Vector3 d = worldExtremity1 - worldExtremity2;

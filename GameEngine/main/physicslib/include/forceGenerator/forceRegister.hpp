@@ -1,6 +1,6 @@
 #pragma once
 
-#include "particleForceGenerator.hpp"
+#include "rigidBodyForceGenerator.hpp"
 
 #include <vector>
 #include <memory>
@@ -12,11 +12,11 @@ namespace physicslib
 	public:
 		struct ForceRecord
 		{
-			ForceRecord(const std::shared_ptr<Particle> particle, 
-				const std::shared_ptr<const ParticleForceGenerator> forceGenerator);
+			ForceRecord(const std::shared_ptr<RigidBody> rigidBody,
+				const std::shared_ptr<const RigidBodyForceGenerator> forceGenerator);
 
-			const std::shared_ptr<Particle> particle;
-			const std::shared_ptr<const ParticleForceGenerator> forceGenerator;
+			const std::shared_ptr<RigidBody> rigidBody;
+			const std::shared_ptr<const RigidBodyForceGenerator> forceGenerator;
 		};
 		void add(const ForceRecord& record);
 		void clear();
