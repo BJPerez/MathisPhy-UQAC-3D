@@ -18,7 +18,7 @@ namespace physicslib
 		RigidBody(
 			const double mass, const double angularDamping, const Vector3 boxSize,
 			const Vector3 initialPosition = Vector3(), const Vector3 initialVelocity = Vector3(), const Vector3 initialAcceleration = Vector3(),
-			const Quaternion initialOrientation = Quaternion(), const Vector3 initialRotation = Vector3(), const Vector3 initialAngularAcceleration = Vector3()
+			const Quaternion initialOrientation = Quaternion(), const Vector3 initialAngularVelocity = Vector3(), const Vector3 initialAngularAcceleration = Vector3()
 		);
 
 		/**
@@ -28,7 +28,7 @@ namespace physicslib
 		RigidBody(
 			const double mass, const double angularDamping, const std::vector<Vector3>& points,
 			const Vector3 initialPosition = Vector3(), const Vector3 initialVelocity = Vector3(), const Vector3 initialAcceleration = Vector3(),
-			const Quaternion initialOrientation = Quaternion(), const Vector3 initialRotation = Vector3(), const Vector3 initialAngularAcceleration = Vector3()
+			const Quaternion initialOrientation = Quaternion(), const Vector3 initialAngularVelocity = Vector3(), const Vector3 initialAngularAcceleration = Vector3()
 		);
 
 		/**
@@ -73,8 +73,6 @@ namespace physicslib
 		 */
 		std::vector<double> getBoxVertices() const;
 
-
-
 		#pragma region Getters/Setters
 
 		// Getters
@@ -83,14 +81,14 @@ namespace physicslib
 		physicslib::Vector3 getVelocity() const;
 		physicslib::Vector3 getAcceleration() const;
 		physicslib::Quaternion getOrientation() const;
-		physicslib::Vector3 getRotation() const;
+		physicslib::Vector3 getAngularVelocity() const;
 
 		// Setters
 		void setPosition(physicslib::Vector3 position);
 		void setVelocity(physicslib::Vector3 velocity);
 		void setAcceleration(physicslib::Vector3 acceleration);
 		void setOrientation(physicslib::Quaternion orientation);
-		void setRotation(physicslib::Vector3 rotation);
+		void setAngularVelocity(physicslib::Vector3 rotation);
 
 		#pragma endregion
 
@@ -101,7 +99,7 @@ namespace physicslib
 		physicslib::Vector3 m_acceleration;
 		physicslib::Vector3 m_forceAccumulator;
 		physicslib::Quaternion m_orientation;
-		physicslib::Vector3 m_rotation;
+		physicslib::Vector3 m_angularVelocity;
 		physicslib::Vector3 m_angularAcceleration;
 		physicslib::Vector3 m_torqueAccumulator;
 		double m_angularDamping;

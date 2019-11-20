@@ -47,19 +47,19 @@ void GameWorld::run()
 void GameWorld::initializeRigidBodies()
 {
 	physicslib::RigidBody BoxRigidBody(
-		0., 0.9, physicslib::Vector3(5, 5, 5),
+		0., 1., physicslib::Vector3(5, 5, 5),
 		physicslib::Vector3(), physicslib::Vector3(), physicslib::Vector3(),
-		physicslib::Quaternion(cos(3.14 / 8), 0, 0, sin(3.14 / 8)), physicslib::Vector3(100, 0, 0)
+		physicslib::Quaternion(1, 0, 0, 0), physicslib::Vector3(1, 0, 0)
 	);
 
-	physicslib::RigidBody BoxRigidBody2(
-		10., 0.9, physicslib::Vector3(5, 2, 3),
+	/*physicslib::RigidBody BoxRigidBody2(
+		10., 1., physicslib::Vector3(5, 2, 3),
 		physicslib::Vector3(2, 0, 0), physicslib::Vector3(0, 0, -1), physicslib::Vector3(),
 		physicslib::Quaternion(cos(3.14 / 8), 0, 0, sin(3.14 / 8))
-	);
+	);*/
 
 	m_rigidBodies.push_back(BoxRigidBody);
-	m_rigidBodies.push_back(BoxRigidBody2);
+	//m_rigidBodies.push_back(BoxRigidBody2);
 }
 
 std::vector<InputsManager::Intention> GameWorld::getPendingIntentions()

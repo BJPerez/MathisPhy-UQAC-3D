@@ -2,6 +2,7 @@
 
 #include <valarray>
 #include <initializer_list>
+#include <iostream>
 #include "math/quaternion.hpp"
 #include "math/vector3.hpp"
 
@@ -106,6 +107,12 @@ namespace physicslib
 		 * Get the size of the matrix
 		 */
 		constexpr std::size_t getSize() const;
+
+		/**
+		 * Return the string representation of the matrix
+		 */
+		std::string toString() const;
+		
 	private:
 		std::valarray<double> m_data;
 	};
