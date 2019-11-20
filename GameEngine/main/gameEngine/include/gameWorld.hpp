@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <memory>
 
 #include "openGlWrapper.hpp"
 #include "shader.hpp"
@@ -33,7 +34,7 @@ private:
 	PhysicEngine m_physicEngine; // The instance of the physic engine
 	RenderEngine m_renderEngine; // The instance of the render engine
 	GLFWwindow* const m_mainWindow; // The opengl id of the main window
-	std::vector<physicslib::RigidBody> m_rigidBodies; // List of all rigid bodies in the world
+	std::vector<std::shared_ptr<physicslib::RigidBody>> m_rigidBodies; // List of all rigid bodies in the world
 	
 	void initializeRigidBodies();
 

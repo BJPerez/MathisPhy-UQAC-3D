@@ -16,7 +16,7 @@ RenderEngine::RenderEngine() : m_openGlWrapper(SCR_WIDTH, SCR_HEIGHT, WINDOW_TIT
 	m_shaderPrograms.insert(std::make_pair(ShaderProgramType::ST_DEFAULT, defaultShader));
 }
 
-void RenderEngine::render(const std::vector< physicslib::RigidBody>& bodies)
+void RenderEngine::render(const std::vector<std::shared_ptr<physicslib::RigidBody>>& bodies)
 {
 	// cleaning screen
 	m_openGlWrapper.clearCurrentWindow();
@@ -39,7 +39,7 @@ GLFWwindow* const RenderEngine::getMainWindow() const
 	return m_mainWindow;
 }
 
-void RenderEngine::draw(const std::vector<physicslib::RigidBody>& bodies)
+void RenderEngine::draw(const std::vector<std::shared_ptr<physicslib::RigidBody>>& bodies)
 {
 	opengl_wrapper::Shader currentShader = m_shaderPrograms.at(ShaderProgramType::ST_DEFAULT);
 	currentShader.use();
@@ -47,7 +47,7 @@ void RenderEngine::draw(const std::vector<physicslib::RigidBody>& bodies)
 	std::vector<double> vertices;
 	for (auto body : bodies)
 	{
-		std::vector<double> bodyVertices = body.getBoxVertices();
+		std::vector<double> bodyVertices = body->getBoxVertices();
 		vertices.insert(vertices.end(), bodyVertices.begin(), bodyVertices.end());
 	};
 	std::tuple<unsigned int, unsigned int> openGlBuffers = m_openGlWrapper.createAndBindDataBuffer(vertices);
@@ -60,12 +60,12 @@ void RenderEngine::draw(const std::vector<physicslib::RigidBody>& bodies)
 
 	// View matrix
 	glm::mat4 view = glm::mat4(1.0f);
-	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -20.0f));
+	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -100.0f));
 	currentShader.setUniform("view", glm::value_ptr(view));
 
 	// Project matrix
 	glm::mat4 projection;
-	projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+	projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 150.0f);
 	currentShader.setUniform("projection", glm::value_ptr(projection));
 
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size()/ 3);

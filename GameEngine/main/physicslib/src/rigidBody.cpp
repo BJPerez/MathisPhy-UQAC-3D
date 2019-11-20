@@ -89,9 +89,8 @@ namespace physicslib
 		m_angularAcceleration = m_inverseInertiaTensor * m_torqueAccumulator;
 		m_angularVelocity = m_angularVelocity * pow(m_angularDamping, frameTime) + m_angularAcceleration * frameTime;
 		m_orientation.updateOrientation(m_angularVelocity, frameTime);
-		m_orientation.normalize();
 
-		std::cout << "orientation: " << m_orientation.toString() << std::endl;
+		std::cout << "angular velocity: " << m_angularVelocity.toString() << std::endl;
 		
 		computeDerivedData();
 		clearAccumulators();
