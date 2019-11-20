@@ -12,8 +12,6 @@ GameWorld::GameWorld(): m_mainWindow(m_renderEngine.getMainWindow())
 
 	// Game variables
 	glfwSetWindowUserPointer(m_mainWindow, &m_inputsManager); //save the manager's pointer to the window to be able to access it in the inputs callback function
-
-	initializeRigidBodies();
 }
 
 void GameWorld::run()
@@ -44,24 +42,6 @@ void GameWorld::run()
 	}
 }
 
-void GameWorld::initializeRigidBodies()
-{
-	std::shared_ptr<physicslib::RigidBody> boxRigidBody = std::make_shared<physicslib::RigidBody>(
-		1., 1., physicslib::Vector3(10, 3, 3),
-		physicslib::Vector3(-30, 0, -1), physicslib::Vector3(15, 20, 0), physicslib::Vector3(),
-		physicslib::Quaternion(1, 0, 0, 0)
-	);
-
-	std::shared_ptr<physicslib::RigidBody> boxRigidBody2 = std::make_shared<physicslib::RigidBody>(
-		1., 1., physicslib::Vector3(10, 3, 3),
-		physicslib::Vector3(30, 0, 1), physicslib::Vector3(-15, 20, 0), physicslib::Vector3(),
-		physicslib::Quaternion(1, 0, 0, 0)
-	);
-
-	m_rigidBodies.push_back(boxRigidBody);
-	m_rigidBodies.push_back(boxRigidBody2);
-}
-
 std::vector<InputsManager::Intention> GameWorld::getPendingIntentions()
 {
 	const opengl_wrapper::OpenGlWrapper& openGlWrapper = m_renderEngine.getOpenGlWrapper();
@@ -89,13 +69,34 @@ void GameWorld::processIntention(const InputsManager::Intention intention)
 	}
 	if (intention == InputsManager::CREATE_SINGLE_BOX)
 	{
-		//create an object and add them
+		std::shared_ptr<physicslib::RigidBody> boxRigidBody = std::make_shared<physicslib::RigidBody>(
+			1., 1., physicslib::Vector3(10, 3, 3),
+			physicslib::Vector3(-30, 0, -1), physicslib::Vector3(15, 20, 0), physicslib::Vector3(),
+			physicslib::Quaternion(1, 0, 0, 0), physicslib::Vector3(2, 6, 8)
+		);
+
+		m_rigidBodies.push_back(boxRigidBody);
 	}
 	if (intention == InputsManager::CREATE_TWO_BOXES)
 	{
-		//eventually delete all rigidbodies ?
-		//create two bodies (made to collide)
-		//add them
+		std::cout << "atydydvh" << std::endl;
+
+		m_rigidBodies.clear();
+
+		std::shared_ptr<physicslib::RigidBody> boxRigidBody = std::make_shared<physicslib::RigidBody>(
+			1., 1., physicslib::Vector3(10, 3, 3),
+			physicslib::Vector3(-30, 0, -1), physicslib::Vector3(15, 20, 0), physicslib::Vector3(),
+			physicslib::Quaternion(1, 0, 0, 0)
+		);
+
+		std::shared_ptr<physicslib::RigidBody> boxRigidBody2 = std::make_shared<physicslib::RigidBody>(
+			1., 1., physicslib::Vector3(10, 3, 3),
+			physicslib::Vector3(30, 0, 1), physicslib::Vector3(-15, 20, 0), physicslib::Vector3(),
+			physicslib::Quaternion(1, 0, 0, 0)
+		);
+
+		m_rigidBodies.push_back(boxRigidBody);
+		m_rigidBodies.push_back(boxRigidBody2);
 	}
 }
 

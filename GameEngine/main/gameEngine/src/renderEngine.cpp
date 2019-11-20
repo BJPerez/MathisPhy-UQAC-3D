@@ -7,12 +7,33 @@
 
 RenderEngine::RenderEngine() : m_openGlWrapper(SCR_WIDTH, SCR_HEIGHT, WINDOW_TITLE), m_mainWindow(m_openGlWrapper.getMainWindow())
 {
+	const char* particleVertexShader =
+		"#version 330 core\n"
+		"layout(location = 0) in vec3 aPos;\n"
+		"\n"
+		"uniform mat4 model;\n"
+		"uniform mat4 view;\n"
+		"uniform mat4 projection;\n"
+		"\n"
+		"void main()\n"
+		"{\n"
+		"	gl_Position = projection * view * model * vec4(aPos, 1.0);\n"
+		"}\n\0";
+
+	const char* particleFragmentShader =
+		"#version 330 core\n"
+		"out vec4 FragColor;\n"
+		"void main()\n"
+		"{\n"
+		"	FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+		"}\n\0";
+
 	// Enable depth testing
 	glEnable(GL_DEPTH_TEST);
 
 	// Register shader
 	opengl_wrapper::Shader defaultShader;
-	defaultShader.loadFromFile("resources/shaders/particle.vs", "resources/shaders/particle.fs");
+	defaultShader.loadFromString(particleVertexShader, particleFragmentShader);
 	m_shaderPrograms.insert(std::make_pair(ShaderProgramType::ST_DEFAULT, defaultShader));
 }
 

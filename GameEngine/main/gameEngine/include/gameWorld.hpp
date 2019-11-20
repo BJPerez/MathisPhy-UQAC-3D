@@ -35,8 +35,6 @@ private:
 	RenderEngine m_renderEngine; // The instance of the render engine
 	GLFWwindow* const m_mainWindow; // The opengl id of the main window
 	std::vector<std::shared_ptr<physicslib::RigidBody>> m_rigidBodies; // List of all rigid bodies in the world
-	
-	void initializeRigidBodies();
 
 	/*
 	 * Function to get the list of all the pending envent.
