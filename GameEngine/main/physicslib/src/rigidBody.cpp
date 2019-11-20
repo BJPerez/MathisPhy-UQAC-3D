@@ -34,12 +34,11 @@ namespace physicslib
 		m_acceleration = m_forceAccumulator;
 		m_velocity = m_velocity + m_acceleration * frameTime;
 		m_position = m_position + m_velocity * frameTime;
-		
 
 		// Orientation update
 		m_angularAcceleration = m_inverseInertiaTensor * m_torqueAccumulator;
 		m_rotation = m_rotation * pow(m_angularDamping, frameTime) + m_angularAcceleration * frameTime;
-		m_orientation.updateAngularVelocity(m_rotation, frameTime);
+		m_orientation.updateOrientation(m_rotation, frameTime);
 		
 		computeDerivedData();
 		clearAccumulators();
