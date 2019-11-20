@@ -2,7 +2,6 @@
 
 PhysicEngine::PhysicEngine()
 {
-
 }
 
 void PhysicEngine::update(const double frametime)

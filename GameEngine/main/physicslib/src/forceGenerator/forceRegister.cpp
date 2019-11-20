@@ -4,9 +4,9 @@
 
 namespace physicslib
 {
-	ForceRegister::ForceRecord::ForceRecord(const std::shared_ptr<Particle> particle,
-		const std::shared_ptr<const ParticleForceGenerator> forceGenerator): 
-		particle(particle), forceGenerator(forceGenerator)
+	ForceRegister::ForceRecord::ForceRecord(const std::shared_ptr<RigidBody> rigidBody,
+		const std::shared_ptr<const RigidBodyForceGenerator> forceGenerator):
+		rigidBody(rigidBody), forceGenerator(forceGenerator)
 	{
 	}
 
@@ -25,7 +25,7 @@ namespace physicslib
 		std::for_each(m_register.begin(), m_register.end(), 
 			[duration](ForceRecord& record)
 			{
-				record.forceGenerator->updateForce(record.particle, duration);
+				record.forceGenerator->updateForce(record.rigidBody, duration);
 			});
 	}
 }
