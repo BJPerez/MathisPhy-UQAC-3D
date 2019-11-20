@@ -1,6 +1,9 @@
+#include "math/vector3.hpp"
+
 #include <iostream>
 #include <math.h>
-#include "math/vector3.hpp"
+#include "math/matrix3.hpp"
+
 namespace physicslib
 {
 	Vector3::Vector3()

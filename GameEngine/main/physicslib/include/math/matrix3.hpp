@@ -3,6 +3,7 @@
 #include <valarray>
 #include <initializer_list>
 #include "math/quaternion.hpp"
+#include "math/vector3.hpp"
 
 namespace physicslib
 {

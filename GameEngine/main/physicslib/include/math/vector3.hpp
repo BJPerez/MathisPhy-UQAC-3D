@@ -1,10 +1,11 @@
 #pragma once
 
 #include <string>
-#include "math/matrix3.hpp"
 
 namespace physicslib
 {
+	class Matrix3;
+
 	class Vector3
 	{
 	public :
