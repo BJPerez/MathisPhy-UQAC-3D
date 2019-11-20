@@ -69,18 +69,18 @@ void GameWorld::processIntention(const InputsManager::Intention intention)
 	}
 	if (intention == InputsManager::CREATE_SINGLE_BOX)
 	{
+		m_rigidBodies.clear();
+
 		std::shared_ptr<physicslib::RigidBody> boxRigidBody = std::make_shared<physicslib::RigidBody>(
 			1., 1., physicslib::Vector3(10, 3, 3),
 			physicslib::Vector3(-30, 0, -1), physicslib::Vector3(15, 20, 0), physicslib::Vector3(),
-			physicslib::Quaternion(1, 0, 0, 0), physicslib::Vector3(2, 6, 8)
+			physicslib::Quaternion(1, 0, 0, 0), physicslib::Vector3(1, 1, 1)
 		);
 
 		m_rigidBodies.push_back(boxRigidBody);
 	}
 	if (intention == InputsManager::CREATE_TWO_BOXES)
 	{
-		std::cout << "atydydvh" << std::endl;
-
 		m_rigidBodies.clear();
 
 		std::shared_ptr<physicslib::RigidBody> boxRigidBody = std::make_shared<physicslib::RigidBody>(

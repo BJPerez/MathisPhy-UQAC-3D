@@ -100,8 +100,6 @@ namespace physicslib
 		m_transformMatrix = Matrix3(m_orientation);
 
 		m_globalInverseInertiaTensor = m_transformMatrix * m_localInverseInertiaTensor * m_transformMatrix.getReverseMatrix();
-
-		std::cout << m_globalInverseInertiaTensor.toString() << std::endl;
 	}
 
 	void RigidBody::addForceAtPoint(const Vector3& force, const Vector3& point)
