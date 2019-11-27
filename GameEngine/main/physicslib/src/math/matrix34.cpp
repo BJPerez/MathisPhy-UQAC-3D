@@ -1,5 +1,7 @@
 #include "math/matrix34.hpp"
 
+#include <algorithm>
+
 namespace physicslib
 {
 	Matrix34::Matrix34()
@@ -13,13 +15,13 @@ namespace physicslib
 	
 
 	Matrix34::Matrix34(double fillNumber)
-		: m_data(fillNumber, 12)
 	{
+		m_data.fill(fillNumber);
 	}
 
 	Matrix34::Matrix34(const std::initializer_list<double>& initializerList)
-		: m_data(initializerList)
 	{
+		std::copy(initializerList.begin(), initializerList.begin() + 9, m_data.begin());
 	}
 
 	Matrix34::Matrix34(const Quaternion& quaternion)
@@ -112,7 +114,8 @@ namespace physicslib
 	// ------------------------------
 	Matrix34& Matrix34::operator+=(const Matrix34& anotherMatrix)
 	{
-		m_data += anotherMatrix.m_data;
+		// Term-term addition
+		std::transform(m_data.begin(), m_data.end(), anotherMatrix.m_data.begin(), m_data.begin(), std::plus<double>());
 		return *this;
 	}
 
@@ -124,7 +127,8 @@ namespace physicslib
 
 	Matrix34& Matrix34::operator-=(const Matrix34& anotherMatrix)
 	{
-		m_data -= anotherMatrix.m_data;
+		// Term-term substraction
+		std::transform(m_data.begin(), m_data.end(), anotherMatrix.m_data.begin(), m_data.begin(), std::minus<double>());
 		return *this;
 	}
 
@@ -167,25 +171,29 @@ namespace physicslib
 	// ------------------------
 	Matrix34& Matrix34::operator+=(const double scalar)
 	{
-		m_data += scalar;
+		// m_data[i] += scalar
+		std::transform(m_data.begin(), m_data.end(), m_data.begin(), [scalar](const double n) { return n + scalar; });
 		return *this;
 	}
 
 	Matrix34& Matrix34::operator-=(const double scalar)
 	{
-		m_data -= scalar;
+		// m_data[i] -= scalar
+		std::transform(m_data.begin(), m_data.end(), m_data.begin(), [scalar](const double n) { return n - scalar; });
 		return *this;
 	}
 
 	Matrix34& Matrix34::operator*=(const double scalar)
 	{
-		m_data *= scalar;
+		// m_data[i] *= scalar
+		std::transform(m_data.begin(), m_data.end(), m_data.begin(), [scalar](const double n) { return n * scalar; });
 		return *this;
 	}
 
 	Matrix34& Matrix34::operator/=(const double scalar)
 	{
-		m_data /= scalar;
+		// m_data[i] /= scalar
+		std::transform(m_data.begin(), m_data.end(), m_data.begin(), [scalar](const double n) { return n / scalar; });
 		return *this;
 	}
 

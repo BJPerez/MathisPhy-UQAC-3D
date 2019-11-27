@@ -1,6 +1,6 @@
 #pragma once
 
-#include <valarray>
+#include <array>
 #include <initializer_list>
 #include "math/quaternion.hpp"
 
@@ -88,7 +88,7 @@ namespace physicslib
 		const double& operator()(const std::size_t row, const std::size_t column) const;
 
 	private :
-		std::valarray<double> m_data;
+		std::array<double, 12> m_data;
 	};
 
 	// Matrix/scalar operations
