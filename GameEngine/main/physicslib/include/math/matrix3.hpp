@@ -1,8 +1,7 @@
 #pragma once
 
-#include <valarray>
+#include <array>
 #include <initializer_list>
-#include <iostream>
 #include "math/quaternion.hpp"
 #include "math/vector3.hpp"
 
@@ -114,7 +113,7 @@ namespace physicslib
 		std::string toString() const;
 		
 	private:
-		std::valarray<double> m_data;
+		std::array<double, 9> m_data;
 	};
 
 	// Matrix/scalar operations

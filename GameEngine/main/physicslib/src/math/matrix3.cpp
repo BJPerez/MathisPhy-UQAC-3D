@@ -1,5 +1,8 @@
 #include "math/matrix3.hpp"
 
+#include <iostream>
+#include <algorithm>
+
 namespace physicslib
 {
 	Matrix3::Matrix3()
@@ -12,13 +15,13 @@ namespace physicslib
 	}
 
 	Matrix3::Matrix3(double fillNumber)
-		: m_data(fillNumber, 9)
 	{
+		m_data.fill(fillNumber);
 	}
 
 	Matrix3::Matrix3(const std::initializer_list<double>& initializerList)
-		: m_data(initializerList)
 	{
+		std::copy(initializerList.begin(), initializerList.begin() + 9, m_data.begin());
 	}
 
 	Matrix3::Matrix3(const Quaternion& quaternion)
@@ -111,14 +114,15 @@ namespace physicslib
 	Matrix3 Matrix3::operator-() const
 	{
 		Matrix3 newMatrix(*this);
-		newMatrix *= 1.;
+		newMatrix *= -1.;
 
 		return newMatrix;
 	}
 
 	Matrix3& Matrix3::operator+=(const Matrix3& anotherMatrix)
 	{
-		m_data += anotherMatrix.m_data;
+		// Term-term addition
+		std::transform(m_data.begin(), m_data.end(), anotherMatrix.m_data.begin(), m_data.begin(), std::plus<double>());
 
 		return *this;
 	}
@@ -126,14 +130,15 @@ namespace physicslib
 	Matrix3 Matrix3::operator+(const Matrix3& anotherMatrix) const
 	{
 		Matrix3 newMatrix(*this);
-		newMatrix *= anotherMatrix;
+		newMatrix += anotherMatrix;
 
 		return newMatrix;
 	}
 
 	Matrix3& Matrix3::operator-=(const Matrix3& anotherMatrix)
 	{
-		m_data -= anotherMatrix.m_data;
+		// Term-term substraction
+		std::transform(m_data.begin(), m_data.end(), anotherMatrix.m_data.begin(), m_data.begin(), std::minus<double>());
 
 		return *this;
 	}
@@ -141,7 +146,7 @@ namespace physicslib
 	Matrix3 Matrix3::operator-(const Matrix3& anotherMatrix) const
 	{
 		Matrix3 newMatrix(*this);
-		newMatrix *= anotherMatrix;
+		newMatrix -= anotherMatrix;
 
 		return newMatrix;
 	}
@@ -192,28 +197,32 @@ namespace physicslib
 	// ------------------------
 	Matrix3& Matrix3::operator+=(const double scalar)
 	{
-		m_data += scalar;
+		// m_data[i] += scalar
+		std::transform(m_data.begin(), m_data.end(), m_data.begin(), [scalar](const double n) { return n + scalar; });
 
 		return *this;
 	}
 
 	Matrix3& Matrix3::operator-=(const double scalar)
 	{
-		m_data -= scalar;
+		// m_data[i] -= scalar
+		std::transform(m_data.begin(), m_data.end(), m_data.begin(), [scalar](const double n) { return n - scalar; });
 
 		return *this;
 	}
 
 	Matrix3& Matrix3::operator*=(const double scalar)
 	{
-		m_data *= scalar;
+		// m_data[i] *= scalar
+		std::transform(m_data.begin(), m_data.end(), m_data.begin(), [scalar](const double n) { return n * scalar; });
 
 		return *this;
 	}
 
 	Matrix3& Matrix3::operator/=(const double scalar)
 	{
-		m_data /= scalar;
+		// m_data[i] /= scalar
+		std::transform(m_data.begin(), m_data.end(), m_data.begin(), [scalar](const double n) { return n / scalar; });
 
 		return *this;
 	}
