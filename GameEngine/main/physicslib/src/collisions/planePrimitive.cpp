@@ -8,4 +8,19 @@ namespace physicslib
 		, m_offset(offset)
 	{
 	}
+
+	std::vector<Vector3> PlanePrimitive::getVertices() const
+	{
+		return std::vector<Vector3>();
+	}
+
+	Vector3 PlanePrimitive::getNormal() const
+	{
+		return m_normal;
+	}
+
+	double PlanePrimitive::getOffset() const
+	{
+		return m_offset;
+	}
 }

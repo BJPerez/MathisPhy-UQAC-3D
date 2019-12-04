@@ -1,6 +1,8 @@
 #include "../include/physicEngine.hpp"
 
 #include "math/vector3.hpp"
+#include "collisions/planePrimitive.hpp"
+#include "collisions/boxPrimitive.hpp"
 
 PhysicEngine::PhysicEngine()
 {
@@ -50,4 +52,39 @@ void PhysicEngine::detectContacts(std::vector<std::shared_ptr<physicslib::RigidB
 			rigidBodies[1]->addForceAtBodyPoint(physicslib::Vector3(500, 0, -500), physicslib::Vector3(-15, 0, -15));
 		}
 	}
+}
+
+std::vector<physicslib::Contact> PhysicEngine::generateContacts(physicslib::Primitive* primitive1, physicslib::Primitive* primitive2) const
+{
+	// Check if primitive1 is a plane primitive
+	if (primitive1->getVertices().empty())
+	{
+		return generateContactsVertexFace(static_cast<physicslib::PlanePrimitive*>(primitive1), static_cast<physicslib::BoxPrimitive*>(primitive2));
+	}
+
+	// Check if primitive2 is a plane primitive
+	if (primitive2->getVertices().empty())
+	{
+		return generateContactsVertexFace(static_cast<physicslib::PlanePrimitive*>(primitive2), static_cast<physicslib::BoxPrimitive*>(primitive1));
+	}
+
+	return std::vector<physicslib::Contact>();
+}
+
+std::vector<physicslib::Contact> PhysicEngine::generateContactsVertexFace(physicslib::PlanePrimitive* planePrimitive, physicslib::BoxPrimitive* boxPrimitive) const
+{
+	std::vector<physicslib::Contact> collisionData;
+
+	for (physicslib::Vector3 vertex : boxPrimitive->getVertices())
+	{
+		if (planePrimitive->getNormal() * vertex <= -planePrimitive->getOffset())
+		{
+			// TODO: half way between point and plane
+			physicslib::Vector3 contactPoint(vertex);
+
+			collisionData.push_back(physicslib::Contact(contactPoint, planePrimitive->getNormal(), planePrimitive->getOffset()));
+		}
+	}
+
+	return collisionData;
 }

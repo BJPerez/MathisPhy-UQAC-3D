@@ -5,11 +5,16 @@
 
 namespace physicslib
 {
-	class PlanePrimitive : Primitive
+	class PlanePrimitive : public Primitive
 	{
 	public:
 		PlanePrimitive(const Vector3& normal, double offset);
 		virtual ~PlanePrimitive() = default;
+
+		virtual std::vector<Vector3> getVertices() const;
+
+		Vector3 getNormal() const;
+		double getOffset() const;
 
 	private:
 		Vector3 m_normal;
