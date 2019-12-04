@@ -1,4 +1,4 @@
-#include "collision/contact.hpp"
+#include "collisions/contact.hpp"
 
 namespace physicslib
 {

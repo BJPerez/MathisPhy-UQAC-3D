@@ -10,9 +10,29 @@ namespace physicslib
 	class Primitive
 	{
 	public:
+		/**
+		 * Contructor
+		 */
 		Primitive(std::shared_ptr<RigidBody> rigidBody, const Matrix34& transformMatrix);
+
+		/**
+		 * Default copy constructor
+		 */
+		Primitive(const Primitive& anotherPrimitive) = default;
+
+		/**
+		 * Virtual destructor
+		 */
 		virtual ~Primitive() = default;
 
+		/**
+		 * Default assignment operator
+		 */
+		Primitive& operator=(const Primitive& anotherPrimitive) = default;
+
+		/**
+		 * Abstract method to get the vertices of the primitive
+		 */
 		virtual std::vector<Vector3> getVertices() const = 0;
 
 	protected:

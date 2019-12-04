@@ -68,7 +68,7 @@ namespace physicslib
 
 		/**
 		 * Get the vertices of the cube representing the rigid body.
-		 * We first create all the vextices from the rigidBodt position.
+		 * We first create all the vertices from the rigidBody position.
 		 * Then we apply the rotation to all the vertices.
 		 */
 		std::vector<double> getBoxVertices() const;

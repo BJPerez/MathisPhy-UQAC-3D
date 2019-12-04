@@ -7,8 +7,25 @@ namespace physicslib
 	class Contact
 	{
 	public:
+		/**
+		 * Constructor
+		 */
 		Contact(const Vector3& contactPoint, const Vector3& contactNormal, double penetration);
+
+		/**
+		 * Default copy constructor
+		 */
+		Contact(const Contact& anotherContact) = default;
+
+		/**
+		 * Virtual destructor
+		 */
 		virtual ~Contact() = default;
+
+		/**
+		 * Default assignment operator
+		 */
+		Contact& operator=(const Contact& anotherContact) = default;
 
 	private:
 		Vector3 m_contactPoint;
