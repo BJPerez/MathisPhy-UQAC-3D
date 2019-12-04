@@ -27,6 +27,11 @@ namespace physicslib
 		 */
 		Contact& operator=(const Contact& anotherContact) = default;
 
+		/**
+		 * Return the string representation of the contact
+		 */
+		std::string toString() const;
+
 	private:
 		Vector3 m_contactPoint;
 		Vector3 m_contactNormal;
