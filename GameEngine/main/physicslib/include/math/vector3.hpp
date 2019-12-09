@@ -100,7 +100,7 @@ namespace physicslib
 		void setZ(double newZ) { m_z = newZ; };
 
 		/**
-		 * Return the string representation of the quaternion
+		 * Return the string representation of the vector
 		 */
 		std::string toString() const;
 
