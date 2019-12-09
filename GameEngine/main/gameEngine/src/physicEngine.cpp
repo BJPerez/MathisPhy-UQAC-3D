@@ -79,8 +79,8 @@ std::vector<physicslib::Contact> PhysicEngine::generateContactsVertexFace(const 
 	{
 		if (planePrimitive.getNormal() * vertex <= -planePrimitive.getOffset())
 		{
-			// TODO: half way between point and plane
-			physicslib::Vector3 contactPoint(vertex);
+			// Contact point at half way between point and plane
+			physicslib::Vector3 contactPoint((vertex + planePrimitive.getNormal() * planePrimitive.getOffset()) / 2.);
 
 			collisionData.push_back(physicslib::Contact(contactPoint, planePrimitive.getNormal(), planePrimitive.getOffset()));
 		}
