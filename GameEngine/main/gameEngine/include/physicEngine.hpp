@@ -48,10 +48,24 @@ private:
 	/**
 	 * Function that generates collision data between two primitives
 	 */
-	std::vector<physicslib::Contact> generateContacts(physicslib::Primitive* primitive1, physicslib::Primitive* primitive2) const;
+	std::vector<physicslib::Contact> generateContacts(const physicslib::Primitive& primitive1, const physicslib::Primitive& primitive2) const;
 
 	/**
 	 * Function that generates collision data between a plane primitive and a box primitive
 	 */
-	std::vector<physicslib::Contact> generateContactsVertexFace(physicslib::PlanePrimitive* planePrimitive, physicslib::BoxPrimitive* boxPrimitive) const;
+	std::vector<physicslib::Contact> generateContactsVertexFace(const physicslib::PlanePrimitive& planePrimitive, const physicslib::BoxPrimitive& boxPrimitive) const;
+
+	/**
+	 * Function used to call a specific contact generation function using tamplate
+	 */
+	template<typename DerivedPrimitive1, typename DerivedPrimitive2, typename Function>
+	std::vector<physicslib::Contact> generateContactsDerived(const physicslib::Primitive& primitive1, const physicslib::Primitive& primitive2, Function generateContactsDerived) const
+	{
+		// Check if cast is safe
+		assert(dynamic_cast<DerivedPrimitive1*>(&primitive1) != nullptr);
+		assert(dynamic_cast<DerivedPrimitive2*>(&primitive2) != nullptr);
+
+		// Downcast primitives and invoke function on them
+		generateContactsDerived(static_cast<DerivedPrimitive1&>(primitive1), static_cast<DerivedPrimitive2&>(primitive2));
+	}
 };

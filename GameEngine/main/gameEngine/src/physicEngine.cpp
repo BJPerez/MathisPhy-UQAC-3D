@@ -54,35 +54,35 @@ void PhysicEngine::detectContacts(std::vector<std::shared_ptr<physicslib::RigidB
 	}
 }
 
-std::vector<physicslib::Contact> PhysicEngine::generateContacts(physicslib::Primitive* primitive1, physicslib::Primitive* primitive2) const
+std::vector<physicslib::Contact> PhysicEngine::generateContacts(const physicslib::Primitive& primitive1, const physicslib::Primitive& primitive2) const
 {
 	// Check if primitive1 is a plane primitive
-	if (primitive1->getVertices().empty())
+	if (primitive1.getVertices().empty())
 	{
-		return generateContactsVertexFace(static_cast<physicslib::PlanePrimitive*>(primitive1), static_cast<physicslib::BoxPrimitive*>(primitive2));
+		return generateContactsDerived<physicslib::PlanePrimitive, physicslib::BoxPrimitive>(primitive1, primitive2, &PhysicEngine::generateContactsVertexFace);
 	}
 
 	// Check if primitive2 is a plane primitive
-	if (primitive2->getVertices().empty())
+	if (primitive2.getVertices().empty())
 	{
-		return generateContactsVertexFace(static_cast<physicslib::PlanePrimitive*>(primitive2), static_cast<physicslib::BoxPrimitive*>(primitive1));
+		return generateContactsDerived<physicslib::PlanePrimitive, physicslib::BoxPrimitive>(primitive2, primitive1, &PhysicEngine::generateContactsVertexFace);
 	}
 
 	return std::vector<physicslib::Contact>();
 }
 
-std::vector<physicslib::Contact> PhysicEngine::generateContactsVertexFace(physicslib::PlanePrimitive* planePrimitive, physicslib::BoxPrimitive* boxPrimitive) const
+std::vector<physicslib::Contact> PhysicEngine::generateContactsVertexFace(const physicslib::PlanePrimitive& planePrimitive, const physicslib::BoxPrimitive& boxPrimitive) const
 {
 	std::vector<physicslib::Contact> collisionData;
 
-	for (physicslib::Vector3 vertex : boxPrimitive->getVertices())
+	for (physicslib::Vector3 vertex : boxPrimitive.getVertices())
 	{
-		if (planePrimitive->getNormal() * vertex <= -planePrimitive->getOffset())
+		if (planePrimitive.getNormal() * vertex <= -planePrimitive.getOffset())
 		{
 			// TODO: half way between point and plane
 			physicslib::Vector3 contactPoint(vertex);
 
-			collisionData.push_back(physicslib::Contact(contactPoint, planePrimitive->getNormal(), planePrimitive->getOffset()));
+			collisionData.push_back(physicslib::Contact(contactPoint, planePrimitive.getNormal(), planePrimitive.getOffset()));
 		}
 	}
 
