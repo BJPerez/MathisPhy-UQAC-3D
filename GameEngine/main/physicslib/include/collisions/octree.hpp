@@ -1,4 +1,4 @@
-/*#pragma once
+#pragma once
 
 #include <vector>
 #include <memory>
@@ -8,6 +8,7 @@
 
 namespace physicslib
 {
+	// Struc used to give bounds to an octree
 	struct BoundingBox
 	{
 		double x;
@@ -21,49 +22,49 @@ namespace physicslib
 	class Octree
 	{
 	public:
-		// Méthode pour créer un quad tree
+		// Constructor
 		Octree(const unsigned int pLevel, const BoundingBox& pBounds);
 
+		// Function used to clear the octree.
+		// Clean all the points and remove the subdivisions.
 		void clear();
 
-		// Insère l'élément dans le quad tree
-		// Si après l'insertion de l'élément le quad tree contient trop d'élément,
-		// split le noeud actuel en 4
+		// Insert an object in the octree.
+		// It first cut the object in points and then add each point to the octree.
 		void insert(std::shared_ptr<Primitive> body);
 
+		// Get the list of all the points that are next to a plane associated with that plane.
+		void retrieve(std::vector<std::pair<Vector3, const PlanePrimitive * >>& collisions, bool top, bool right, bool bottom, bool left) const;
 
-		// Retourne la liste de tous les éléments pouvant être en collision
-		// avec l'élément donné
-		void retrieve(std::vector < std::pair<Vector3, const PlanePrimitive* const> & collisions, bool top, bool right, bool bottom, bool left) const
-
+		// Return if the octree has nodes.
 		bool hasNodes() const;
 
+		// Setters for the planes.
 		static void setTopPlane(const PlanePrimitive * const topPlane);
 		static void setBottomPlane(const PlanePrimitive * const bottomPlane);
 		static void setRightPlane(const PlanePrimitive * const rightPlane);
 		static void setLeftPlane(const PlanePrimitive * const leftPlane);
 
 	private:
-		static const unsigned int MAX_RIGIDBODY_BY_LEVEL = 1;
-		static const unsigned int MAX_LEVELS = 8;
-		static const PlanePrimitive * const m_topPlane;
-		static const PlanePrimitive * const m_bottomPlane;
-		static const PlanePrimitive * const m_leftPlane;
-		static const PlanePrimitive * const m_rightPlane;
+		static const unsigned int MAX_RIGIDBODY_BY_LEVEL = 1; // The maximum number of points by subdivision level
+		static const unsigned int MAX_LEVELS = 8; // The maximum number of level
+		static const PlanePrimitive * m_topPlane;
+		static const PlanePrimitive * m_bottomPlane;
+		static const PlanePrimitive * m_leftPlane;
+		static const PlanePrimitive * m_rightPlane;
 
-		const unsigned int m_level;
-		const BoundingBox m_bounds;
-		std::vector<std::shared_ptr<RigidBody>> m_points;
-		std::vector<Octree> m_nodes;
+		const unsigned int m_level; // The level of this octree
+		const BoundingBox m_bounds; // The bounds of the octree
+		std::vector<Vector3> m_points; // The points contained by the octree
+		std::vector<Octree> m_nodes; // The subdivision nodes of the octree
 
-		// Split le noeud actuel en 4 noeuds fils
-		// Les collider situés entre 2 noeuds sont stockés dans ce noeud.
+		// Split the octree in 8
 		void split();
 
-		// Retourne l'index du noeud fils qui devrait contenir pRect
-		// Retourne -1 si pRect est situé entre 2 noeuds fils
+		// Return the index of the node in which the given point should be.
 		int getIndex(Vector3 point) const;
 
+		// Insert the point iin the octree.
 		void insert(Vector3 point);
 	};
-}*/
+}

@@ -1,4 +1,6 @@
-/*#include "collisions/octree.hpp"
+#include "collisions/octree.hpp"
+
+#include <utility>
 
 namespace physicslib
 {
@@ -98,9 +100,9 @@ namespace physicslib
 		double depthMidPoint = m_bounds.z + (m_bounds.depth / 2);
 
 		// Object can completely fit within the top quadrants
-		bool topQuadrant = (point.y > verticalMidpoint);
-		bool rightQuadrant = (point.x > horizontalMidpoint);
-		bool farQuadrant = (point.z > depthMidPoint);
+		bool topQuadrant = (point.getY() > verticalMidpoint);
+		bool rightQuadrant = (point.getX() > horizontalMidpoint);
+		bool farQuadrant = (point.getZ() > depthMidPoint);
 
 		if (!topQuadrant && !rightQuadrant && !farQuadrant)
 		{
@@ -142,7 +144,7 @@ namespace physicslib
 	{
 		std::vector<Vector3> bodyPoints = body->getVertices();
 		std::for_each(bodyPoints.begin(), bodyPoints.end(),
-			[](Vector3 point)
+			[this](Vector3 point)
 			{
 				insert(point);
 			});
@@ -166,13 +168,13 @@ namespace physicslib
 				split();
 			}
 
-			std::for_each(m_colliders.begin(), m_colliders.end(),
-				[](Vector3 oldPoint)
+			std::for_each(m_points.begin(), m_points.end(),
+				[this](Vector3 oldPoint)
 				{
 					int index = getIndex(oldPoint);
 					m_nodes.at(index).insert(oldPoint);
-				}
-			m_colliders.clear();
+				});
+			m_points.clear();
 		}
 	}
 
@@ -188,30 +190,29 @@ namespace physicslib
 		}
 	}
 
-	void Octree::retrieve(std::vector<std::pair<Vector3, const PlanePrimitive * const>& collisions, bool top, bool right, bool bottom, bool left) const
+	void Octree::retrieve(std::vector<std::pair<Vector3, const PlanePrimitive *>>& collisions, bool top, bool right, bool bottom, bool left) const
 	{
 		if (!hasNodes())
 		{
-			std::for_each(m_points.begin(), m_points.end(),
-				[top, right, bottom, left](Vector3 point)
+			for (unsigned int i = 0; i < m_points.size(); ++i)
+			{
+				if (top)
 				{
-					if (top)
-					{
-						collisions.insert(std::make_pair<Vector3, const PlanePrimitive* const>(point, m_topPlane));
-					}
-					if (left)
-					{
-						collisions.insert(std::make_pair<Vector3, const PlanePrimitive* const>(point, m_leftPlane));
-					}
-					if (bottom)
-					{
-						collisions.insert(std::make_pair<Vector3, const PlanePrimitive* const>(point, m_bottomPlane));
-					}
-					if (right)
-					{
-						collisions.insert(std::make_pair<Vector3, const PlanePrimitive* const>(point, m_rightPlane));
-					}
-				});
+					collisions.push_back(std::make_pair(m_points.at(i), m_topPlane));
+				}
+				if (left)
+				{
+					collisions.push_back(std::make_pair(m_points.at(i), m_leftPlane));
+				}
+				if (bottom)
+				{
+					collisions.push_back(std::make_pair(m_points.at(i), m_bottomPlane));
+				}
+				if (right)
+				{
+					collisions.push_back(std::make_pair(m_points.at(i), m_rightPlane));
+				}
+			}
 		}
 		else
 		{
@@ -272,4 +273,4 @@ namespace physicslib
 	{
 		m_leftPlane = leftPlane;
 	}
-}*/
+}
