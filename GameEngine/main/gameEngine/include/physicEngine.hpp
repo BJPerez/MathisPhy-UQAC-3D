@@ -58,6 +58,10 @@ private:
 
 	/**
 	 * Function used to call a specific contact generation function using tamplate
+	 * The `generateContactDerived` function need to be static or non-member
+	 * and has 2 parameters of the desired derived types of `Primitive`
+	 * Example call :
+	 * `generateContactsDerived<physicslib::PlanePrimitive, physicslib::BoxPrimitive>(&PhysicEngine::generateContactsVertexFace, primitive1, primitive2);`
 	 */
 	template<typename DerivedPrimitive1, typename DerivedPrimitive2, typename Function>
 	std::vector<physicslib::Contact> generateContactsDerived(Function generateContactsDerived, const physicslib::Primitive& primitive1, const physicslib::Primitive& primitive2) const
