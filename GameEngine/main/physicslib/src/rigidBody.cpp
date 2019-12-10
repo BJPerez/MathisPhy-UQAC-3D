@@ -229,6 +229,16 @@ namespace physicslib
 		return m_angularVelocity;
 	}
 
+	physicslib::Matrix3 RigidBody::getTransformMatrix() const
+	{
+		return m_transformMatrix;
+	}
+
+	physicslib::Vector3 RigidBody::getBoxSize() const
+	{
+		return m_boxSize;
+	}
+
 	void RigidBody::setPosition(physicslib::Vector3 position)
 	{
 		m_position = position;

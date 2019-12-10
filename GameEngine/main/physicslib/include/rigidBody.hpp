@@ -83,6 +83,9 @@ namespace physicslib
 		physicslib::Quaternion getOrientation() const;
 		physicslib::Vector3 getAngularVelocity() const;
 
+		physicslib::Matrix3 getTransformMatrix() const;
+		physicslib::Vector3 getBoxSize() const;
+
 		// Setters
 		void setPosition(physicslib::Vector3 position);
 		void setVelocity(physicslib::Vector3 velocity);
