@@ -99,6 +99,3 @@ void GameWorld::processIntention(const InputsManager::Intention intention)
 		m_rigidBodies.push_back(boxRigidBody2);
 	}
 }
-
-
-

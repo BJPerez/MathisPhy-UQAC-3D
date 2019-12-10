@@ -1,5 +1,6 @@
 #include "../include/physicEngine.hpp"
 
+#include <iostream>
 #include "math/vector3.hpp"
 #include "collisions/planePrimitive.hpp"
 #include "collisions/boxPrimitive.hpp"
@@ -44,12 +45,16 @@ void PhysicEngine::detectContacts(std::vector<std::shared_ptr<physicslib::RigidB
 {
 	if (rigidBodies.size() >= 2)
 	{
-		if (abs(rigidBodies[0]->getPosition().getX() - rigidBodies[1]->getPosition().getX()) < 10)
+		if (rigidBodies[0]->getPosition().getX() > 10)
 		{
-			rigidBodies[0]->setVelocity(-rigidBodies[0]->getVelocity());
-			rigidBodies[1]->setVelocity(-rigidBodies[1]->getVelocity());
-			rigidBodies[0]->addForceAtBodyPoint(physicslib::Vector3(-500, 0, 500), physicslib::Vector3(15, 0, 15));
-			rigidBodies[1]->addForceAtBodyPoint(physicslib::Vector3(500, 0, -500), physicslib::Vector3(-15, 0, -15));
+			physicslib::BoxPrimitive primitive1(rigidBodies.at(0));
+			physicslib::PlanePrimitive primitive2(physicslib::Vector3(-1, 0, 0), 10);
+			std::vector<physicslib::Contact> contacts = generateContacts(primitive1, primitive2);
+
+			for (const auto& contact : contacts)
+			{
+				std::cout << contact.toString() << std::endl;
+			}
 		}
 	}
 }
