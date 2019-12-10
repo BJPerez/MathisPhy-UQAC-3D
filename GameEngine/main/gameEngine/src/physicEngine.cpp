@@ -3,9 +3,15 @@
 #include "math/vector3.hpp"
 #include "collisions/planePrimitive.hpp"
 #include "collisions/boxPrimitive.hpp"
+#include "collisions/octree.hpp"
 
-PhysicEngine::PhysicEngine()
+PhysicEngine::PhysicEngine():m_leftPlane(physicslib::Vector3(1, 0, 0), 0), m_rightPlane(physicslib::Vector3(-1, 0, 0), 800),
+m_topPlane(physicslib::Vector3(0, -1, 0), 600), m_bottomPlane(physicslib::Vector3(0, 1, 0), 0)
 {
+	/*physicslib::Octree::setBottomPlane(&m_bottomPlane);
+	physicslib::Octree::setTopPlane(&m_topPlane);
+	physicslib::Octree::setRightPlane(&m_rightPlane);
+	physicslib::Octree::setLeftPlane(&m_leftPlane);*/
 }
 
 void PhysicEngine::update(std::vector<std::shared_ptr<physicslib::RigidBody>>& rigidBodies, const double frametime)
@@ -23,6 +29,16 @@ void PhysicEngine::update(std::vector<std::shared_ptr<physicslib::RigidBody>>& r
 	}
 
 	// look for collisions and resolve them
+
+	// MA FONCTION
+	/*physicslib::BoundingBox octreeBox;
+	octreeBox.x = 0;
+	octreeBox.y = 0;
+	octreeBox.z = 0;
+	octreeBox.width = 800;
+	octreeBox.height = 600;
+	octreeBox.depth = 1000;
+	physicslib::Octree octree(0, octreeBox);*/
 	detectContacts(rigidBodies);
 	m_contactRegister.resolveContacts(frametime);
 

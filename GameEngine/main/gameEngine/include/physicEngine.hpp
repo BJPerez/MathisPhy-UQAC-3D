@@ -10,6 +10,7 @@
 #include "collisions/planePrimitive.hpp"
 #include "collisions/boxPrimitive.hpp"
 #include "collisions/contact.hpp"
+#include "collisions/planePrimitive.hpp"
 
 /**
  * This class represents the physic engine and implements all the functions 
@@ -32,6 +33,10 @@ public:
 private:
 	physicslib::ForceRegister m_forceRegister; // The register containing all forces associated with the object they're applied to.
 	physicslib::ContactRegister m_contactRegister; // The register containing all contacts between 2 objects.
+	const physicslib::PlanePrimitive m_leftPlane;
+	const physicslib::PlanePrimitive m_rightPlane;
+	const physicslib::PlanePrimitive m_topPlane;
+	const physicslib::PlanePrimitive m_bottomPlane;
 
 	std::shared_ptr<physicslib::RigidBodyGravityForceGenerator> gravityGenerator = std::make_shared<physicslib::RigidBodyGravityForceGenerator>(physicslib::Vector3(0, -20, 0));
 	std::shared_ptr<physicslib::RigidBodyDragForceGenerator> dragGenerator = std::make_shared<physicslib::RigidBodyDragForceGenerator>(0.03, 0);

@@ -1,4 +1,4 @@
-#include "collisions/octree.hpp"
+/*#include "collisions/octree.hpp"
 
 namespace physicslib
 {
@@ -8,7 +8,7 @@ namespace physicslib
 
 	void Octree::clear()
 	{
-		m_colliders.clear();
+		m_points.clear();
 
 		std::for_each(m_nodes.begin(), m_nodes.end(),
 			[](Octree& node)
@@ -90,51 +90,43 @@ namespace physicslib
 		m_nodes.push_back(Octree(m_level + 1, node));
 	}
 
-	int Octree::getIndex(BoundingBox bodyBounds) const
+	int Octree::getIndex(Vector3 point) const
 	{
-		int index = -1;
+		int index;
 		double verticalMidpoint = m_bounds.x + (m_bounds.width / 2);
 		double horizontalMidpoint = m_bounds.y + (m_bounds.height / 2);
 		double depthMidPoint = m_bounds.z + (m_bounds.depth / 2);
 
 		// Object can completely fit within the top quadrants
-		bool topQuadrant = (bodyBounds.y > verticalMidpoint);
-		// Object can completely fit within the bottom quadrants
-		bool bottomQuadrant = ((bodyBounds.y + bodyBounds.height) < verticalMidpoint);
+		bool topQuadrant = (point.y > verticalMidpoint);
+		bool rightQuadrant = (point.x > horizontalMidpoint);
+		bool farQuadrant = (point.z > depthMidPoint);
 
-		bool rightQuadrant = (bodyBounds.x > horizontalMidpoint);
-		// Object can completely fit within the bottom quadrants
-		bool leftQuadrant = ((bodyBounds.x + bodyBounds.width) < horizontalMidpoint);
-
-		bool farQuadrant = (bodyBounds.z > depthMidPoint);
-		// Object can completely fit within the bottom quadrants
-		bool nearQuadrant = ((bodyBounds.z + bodyBounds.depth) < depthMidPoint);
-
-		if (bottomQuadrant && leftQuadrant && nearQuadrant)
+		if (!topQuadrant && !rightQuadrant && !farQuadrant)
 		{
 			index = 0;
 		}
-		else if (bottomQuadrant && rightQuadrant && nearQuadrant)
+		else if (!topQuadrant && rightQuadrant && !farQuadrant)
 		{
 			index = 1;
 		}
-		else if (topQuadrant && leftQuadrant && nearQuadrant)
+		else if (topQuadrant && !rightQuadrant && !farQuadrant)
 		{
 			index = 2;
 		}
-		else if (bottomQuadrant && leftQuadrant && farQuadrant)
+		else if (!topQuadrant && !rightQuadrant && farQuadrant)
 		{
 			index = 3;
 		}
-		else if (topQuadrant && rightQuadrant && nearQuadrant)
+		else if (topQuadrant && rightQuadrant && !farQuadrant)
 		{
 			index = 4;
 		}
-		else if (bottomQuadrant && rightQuadrant && farQuadrant)
+		else if (!topQuadrant && rightQuadrant && farQuadrant)
 		{
 			index = 5;
 		}
-		else if (topQuadrant && leftQuadrant && farQuadrant)
+		else if (topQuadrant && !rightQuadrant && farQuadrant)
 		{
 			index = 6;
 		}
@@ -146,88 +138,138 @@ namespace physicslib
 		return index;
 	}
 
-	void Octree::insert(std::shared_ptr<RigidBody> body)
+	void Octree::insert(std::shared_ptr<Primitive> body)
 	{
-		Vector3 bodyPosition = body->getPosition();
-		Vector3 bodyBoxSize = body->getBoxSize();
-
-		BoundingBox bodyBounds;
-		bodyBounds.x = bodyPosition.getX() - (bodyBoxSize.getX() / 2);
-		bodyBounds.y = bodyPosition.getY() - (bodyBoxSize.getY() / 2);
-		bodyBounds.z = bodyPosition.getZ() - (bodyBoxSize.getZ() / 2);
-		bodyBounds.width = bodyBoxSize.getX();
-		bodyBounds.height = bodyBoxSize.getY();
-		bodyBounds.depth = bodyBoxSize.getZ();
-
-		if (m_nodes.size() != 0)
-		{
-			int index = getIndex(bodyBounds);
-			if (index != -1)
+		std::vector<Vector3> bodyPoints = body->getVertices();
+		std::for_each(bodyPoints.begin(), bodyPoints.end(),
+			[](Vector3 point)
 			{
-				m_nodes.at(index).insert(body);
-				return;
-			}
+				insert(point);
+			});
+	}
+
+	void Octree::insert(Vector3 point)
+	{
+		if (hasNodes())
+		{
+			int index = getIndex(point);
+			m_nodes.at(index).insert(point);
+			return;
 		}
 
-		m_colliders.push_back(body);
+		m_points.push_back(point);
 
-		if (m_colliders.size() > MAX_RIGIDBODY_BY_LEVEL && m_level < MAX_LEVELS)
+		if (m_points.size() > MAX_RIGIDBODY_BY_LEVEL && m_level < MAX_LEVELS)
 		{
-			if (m_nodes.size() == 0)
+			if (!hasNodes())
 			{
 				split();
 			}
 
-			int i = 0;
-			while (i < m_colliders.size())
-			{
-				bodyPosition = body->getPosition();
-				bodyBoxSize = body->getBoxSize();
-
-				bodyBounds.x = bodyPosition.getX() - (bodyBoxSize.getX() / 2);
-				bodyBounds.y = bodyPosition.getY() - (bodyBoxSize.getY() / 2);
-				bodyBounds.z = bodyPosition.getZ() - (bodyBoxSize.getZ() / 2);
-				bodyBounds.width = bodyBoxSize.getX();
-				bodyBounds.height = bodyBoxSize.getY();
-				bodyBounds.depth = bodyBoxSize.getZ();
-
-				int index = getIndex(bodyBounds);
-				if (index != -1)
+			std::for_each(m_colliders.begin(), m_colliders.end(),
+				[](Vector3 oldPoint)
 				{
-					m_nodes.at(index).insert(m_colliders.at(i));
-					m_colliders.erase(m_colliders.begin() + i);
+					int index = getIndex(oldPoint);
+					m_nodes.at(index).insert(oldPoint);
 				}
-				else
+			m_colliders.clear();
+		}
+	}
+
+	bool Octree::hasNodes() const
+	{
+		if (m_nodes.size() != 0)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	void Octree::retrieve(std::vector<std::pair<Vector3, const PlanePrimitive * const>& collisions, bool top, bool right, bool bottom, bool left) const
+	{
+		if (!hasNodes())
+		{
+			std::for_each(m_points.begin(), m_points.end(),
+				[top, right, bottom, left](Vector3 point)
 				{
-					i++;
+					if (top)
+					{
+						collisions.insert(std::make_pair<Vector3, const PlanePrimitive* const>(point, m_topPlane));
+					}
+					if (left)
+					{
+						collisions.insert(std::make_pair<Vector3, const PlanePrimitive* const>(point, m_leftPlane));
+					}
+					if (bottom)
+					{
+						collisions.insert(std::make_pair<Vector3, const PlanePrimitive* const>(point, m_bottomPlane));
+					}
+					if (right)
+					{
+						collisions.insert(std::make_pair<Vector3, const PlanePrimitive* const>(point, m_rightPlane));
+					}
+				});
+		}
+		else
+		{
+			for (unsigned int i = 0; i < m_nodes.size(); ++i)
+			{
+				if (i == 0)
+				{
+					retrieve(collisions, false, false, true && bottom, true && left);
+				}
+				if (i == 1)
+				{
+					retrieve(collisions, false, true && right, true && bottom, false);
+				}
+				if (i == 2)
+				{
+					retrieve(collisions, true && top, false, false, true && left);
+				}
+				if (i == 3)
+				{
+					retrieve(collisions, false, false, true && bottom, true && left);
+				}
+				if (i == 4)
+				{
+					retrieve(collisions, true && top, true && right, false, false);
+				}
+				if (i == 5)
+				{
+					retrieve(collisions, false, true && right, true && bottom, false);
+				}
+				if (i == 6)
+				{
+					retrieve(collisions, true && top, false, false, true && left);
+				}
+				if (i == 7)
+				{
+					retrieve(collisions, true && top, true && right, false, false);
 				}
 			}
 		}
 	}
 
-	std::vector<std::shared_ptr<RigidBody>> Octree::retrieve(std::shared_ptr<RigidBody> body) const
+	void Octree::setTopPlane(const PlanePrimitive * const topPlane)
 	{
-		std::vector<std::shared_ptr<RigidBody>> result;
-
-		Vector3 bodyPosition = body->getPosition();
-		Vector3 bodyBoxSize = body->getBoxSize();
-
-		BoundingBox bodyBounds;
-		bodyBounds.x = bodyPosition.getX() - (bodyBoxSize.getX() / 2);
-		bodyBounds.y = bodyPosition.getY() - (bodyBoxSize.getY() / 2);
-		bodyBounds.z = bodyPosition.getZ() - (bodyBoxSize.getZ() / 2);
-		bodyBounds.width = bodyBoxSize.getX();
-		bodyBounds.height = bodyBoxSize.getY();
-		bodyBounds.depth = bodyBoxSize.getZ();
-
-		int index = getIndex(bodyBounds);
-		if (index != -1 && m_nodes.size() != 0)
-		{
-			result = m_nodes.at(index).retrieve(body);
-		}
-
-		result.insert(result.end(), m_colliders.begin(), m_colliders.end());
-
-		return result;
+		m_topPlane = topPlane;
 	}
-}
+
+	void Octree::setBottomPlane(const PlanePrimitive * const bottomPlane)
+	{
+		m_bottomPlane = bottomPlane;
+	}
+
+	void Octree::setRightPlane(const PlanePrimitive * const rightPlane)
+	{
+		m_rightPlane = rightPlane;
+	}
+
+	void Octree::setLeftPlane(const PlanePrimitive * const leftPlane)
+	{
+		m_leftPlane = leftPlane;
+	}
+}*/
