@@ -13,9 +13,9 @@ namespace physicslib
 		std::vector<Vector3> vertices;
 
 		std::vector<double> rigidBodyVertices = m_rigidBody->getBoxVertices();
-		for (int i = 0; i < rigidBodyVertices.size() - 2; i += 3)
+		for (std::size_t i = 0; i < rigidBodyVertices.size() - 2; i += 3)
 		{
-			vertices.push_back(Vector3(rigidBodyVertices[i], rigidBodyVertices[i + 1], rigidBodyVertices[i + 2]));
+			vertices.push_back(Vector3(rigidBodyVertices.at(i), rigidBodyVertices.at(i + 1), rigidBodyVertices.at(i + 2)));
 		}
 
 		return vertices;
