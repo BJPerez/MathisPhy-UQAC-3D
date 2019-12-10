@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include "forceGenerator/forceRegister.hpp"
 #include "collisions/contactRegister.hpp"
 #include "rigidBody.hpp"
@@ -53,19 +54,19 @@ private:
 	/**
 	 * Function that generates collision data between a plane primitive and a box primitive
 	 */
-	std::vector<physicslib::Contact> generateContactsVertexFace(const physicslib::PlanePrimitive& planePrimitive, const physicslib::BoxPrimitive& boxPrimitive) const;
+	static std::vector<physicslib::Contact> generateContactsVertexFace(const physicslib::PlanePrimitive& planePrimitive, const physicslib::BoxPrimitive& boxPrimitive);
 
 	/**
 	 * Function used to call a specific contact generation function using tamplate
 	 */
 	template<typename DerivedPrimitive1, typename DerivedPrimitive2, typename Function>
-	std::vector<physicslib::Contact> generateContactsDerived(const physicslib::Primitive& primitive1, const physicslib::Primitive& primitive2, Function generateContactsDerived) const
+	std::vector<physicslib::Contact> generateContactsDerived(Function generateContactsDerived, const physicslib::Primitive& primitive1, const physicslib::Primitive& primitive2) const
 	{
 		// Check if cast is safe
-		assert(dynamic_cast<DerivedPrimitive1*>(&primitive1) != nullptr);
-		assert(dynamic_cast<DerivedPrimitive2*>(&primitive2) != nullptr);
+		assert(dynamic_cast<const DerivedPrimitive1*>(&primitive1) != nullptr);
+		assert(dynamic_cast<const DerivedPrimitive2*>(&primitive2) != nullptr);
 
 		// Downcast primitives and invoke function on them
-		generateContactsDerived(static_cast<DerivedPrimitive1&>(primitive1), static_cast<DerivedPrimitive2&>(primitive2));
+		return generateContactsDerived(static_cast<const DerivedPrimitive1&>(primitive1), static_cast<const DerivedPrimitive2&>(primitive2));
 	}
 };
