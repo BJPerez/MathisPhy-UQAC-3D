@@ -59,19 +59,19 @@ std::vector<physicslib::Contact> PhysicEngine::generateContacts(const physicslib
 	// Check if primitive1 is a plane primitive
 	if (primitive1.getVertices().empty())
 	{
-		return generateContactsDerived<physicslib::PlanePrimitive, physicslib::BoxPrimitive>(primitive1, primitive2, &PhysicEngine::generateContactsVertexFace);
+		return generateContactsDerived<physicslib::PlanePrimitive, physicslib::BoxPrimitive>(&PhysicEngine::generateContactsVertexFace, primitive1, primitive2);
 	}
 
 	// Check if primitive2 is a plane primitive
 	if (primitive2.getVertices().empty())
 	{
-		return generateContactsDerived<physicslib::PlanePrimitive, physicslib::BoxPrimitive>(primitive2, primitive1, &PhysicEngine::generateContactsVertexFace);
+		return generateContactsDerived<physicslib::PlanePrimitive, physicslib::BoxPrimitive>(&PhysicEngine::generateContactsVertexFace, primitive2, primitive1);
 	}
 
 	return std::vector<physicslib::Contact>();
 }
 
-std::vector<physicslib::Contact> PhysicEngine::generateContactsVertexFace(const physicslib::PlanePrimitive& planePrimitive, const physicslib::BoxPrimitive& boxPrimitive) const
+std::vector<physicslib::Contact> PhysicEngine::generateContactsVertexFace(const physicslib::PlanePrimitive& planePrimitive, const physicslib::BoxPrimitive& boxPrimitive)
 {
 	std::vector<physicslib::Contact> collisionData;
 
