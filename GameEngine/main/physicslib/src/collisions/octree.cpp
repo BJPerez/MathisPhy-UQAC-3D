@@ -4,6 +4,11 @@
 
 namespace physicslib
 {
+	const PlanePrimitive* Octree::m_rightPlane = nullptr;
+	const PlanePrimitive* Octree::m_leftPlane = nullptr;
+	const PlanePrimitive* Octree::m_topPlane = nullptr;
+	const PlanePrimitive* Octree::m_bottomPlane = nullptr;
+
 	Octree::Octree(const unsigned int pLevel, const BoundingBox& pBounds): m_level(pLevel), m_bounds(pBounds)
 	{
 	}
@@ -26,6 +31,7 @@ namespace physicslib
 		double subHeight = m_bounds.height / 2;
 		double subDepth = m_bounds.depth / 2;
 
+		// We create the different new octrees
 		BoundingBox node;
 		node.x = m_bounds.x;
 		node.y = m_bounds.y;
@@ -99,11 +105,12 @@ namespace physicslib
 		double horizontalMidpoint = m_bounds.y + (m_bounds.height / 2);
 		double depthMidPoint = m_bounds.z + (m_bounds.depth / 2);
 
-		// Object can completely fit within the top quadrants
+		// We look on the 3 different axes
 		bool topQuadrant = (point.getY() > verticalMidpoint);
 		bool rightQuadrant = (point.getX() > horizontalMidpoint);
 		bool farQuadrant = (point.getZ() > depthMidPoint);
 
+		// We return the index in functions of the position
 		if (!topQuadrant && !rightQuadrant && !farQuadrant)
 		{
 			index = 0;
@@ -152,6 +159,7 @@ namespace physicslib
 
 	void Octree::insert(Vector3 point)
 	{
+		// if we already has nodes we just insert in the good nodes
 		if (hasNodes())
 		{
 			int index = getIndex(point);
@@ -159,15 +167,12 @@ namespace physicslib
 			return;
 		}
 
+		// if we don't we add inside this octree
 		m_points.push_back(point);
-
+		// if we have too many point we split the tree and insert the points in the new nodes
 		if (m_points.size() > MAX_RIGIDBODY_BY_LEVEL && m_level < MAX_LEVELS)
 		{
-			if (!hasNodes())
-			{
-				split();
-			}
-
+			split();
 			std::for_each(m_points.begin(), m_points.end(),
 				[this](Vector3 oldPoint)
 				{
@@ -192,6 +197,17 @@ namespace physicslib
 
 	void Octree::retrieve(std::vector<std::pair<Vector3, const PlanePrimitive *>>& collisions, bool top, bool right, bool bottom, bool left) const
 	{
+		/* In this function, we pass 4 bool depending of the position of the octree in the space
+		 * For example _________
+		 *             |___|___|
+		               |___|___|
+		 * The bottom right square has right to true and bottom to true because it is on the bottom right and it cans
+		 * touch the right plane and the bottom plane. 
+		 */
+
+		/*
+		 * If this is a leave, we add the collision with the planes depending on the bool which are still set to true.
+		 */
 		if (!hasNodes())
 		{
 			for (unsigned int i = 0; i < m_points.size(); ++i)
@@ -214,41 +230,47 @@ namespace physicslib
 				}
 			}
 		}
+		/*
+		 * If this is a node, we call retrieve on all the child nodes.
+		 * For each node we update the 4 bools.
+		 * For example, if the current node is on the top right and the child node
+		 * on the bottom right. The only plane possible is on the right. 
+		 */
 		else
 		{
 			for (unsigned int i = 0; i < m_nodes.size(); ++i)
 			{
 				if (i == 0)
 				{
-					retrieve(collisions, false, false, true && bottom, true && left);
+					m_nodes.at(0).retrieve(collisions, false, false, true && bottom, true && left);
 				}
 				if (i == 1)
 				{
-					retrieve(collisions, false, true && right, true && bottom, false);
+					m_nodes.at(1).retrieve(collisions, false, true && right, true && bottom, false);
 				}
 				if (i == 2)
 				{
-					retrieve(collisions, true && top, false, false, true && left);
+					m_nodes.at(2).retrieve(collisions, true && top, false, false, true && left);
 				}
 				if (i == 3)
 				{
-					retrieve(collisions, false, false, true && bottom, true && left);
+					m_nodes.at(3).retrieve(collisions, false, false, true && bottom, true && left);
 				}
 				if (i == 4)
 				{
-					retrieve(collisions, true && top, true && right, false, false);
+					m_nodes.at(4).retrieve(collisions, true && top, true && right, false, false);
 				}
 				if (i == 5)
 				{
-					retrieve(collisions, false, true && right, true && bottom, false);
+					m_nodes.at(5).retrieve(collisions, false, true && right, true && bottom, false);
 				}
 				if (i == 6)
 				{
-					retrieve(collisions, true && top, false, false, true && left);
+					m_nodes.at(6).retrieve(collisions, true && top, false, false, true && left);
 				}
 				if (i == 7)
 				{
-					retrieve(collisions, true && top, true && right, false, false);
+					m_nodes.at(7).retrieve(collisions, true && top, true && right, false, false);
 				}
 			}
 		}

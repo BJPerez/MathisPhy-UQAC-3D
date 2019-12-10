@@ -11,6 +11,7 @@ namespace physicslib
 	// Struc used to give bounds to an octree
 	struct BoundingBox
 	{
+		// x, y, z represent the bottom left point of the octree
 		double x;
 		double y;
 		double z;
