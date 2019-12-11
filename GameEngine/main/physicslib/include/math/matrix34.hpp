@@ -3,6 +3,7 @@
 #include <array>
 #include <initializer_list>
 #include "math/quaternion.hpp"
+#include "math/matrix3.hpp"
 
 namespace physicslib
 {
@@ -30,6 +31,11 @@ namespace physicslib
 		 * Create a matrix 4x4 from a quaternion
 		 */
 		Matrix34(const Quaternion& quaternion);
+
+		/**
+		 * Create a matrix 4x4 from a matrix 3x3 and a vector
+		 */
+		Matrix34(const Matrix3& matrix3, const Vector3& vector = physicslib::Vector3());
 
 		/**
 		 * Default copy constructor

@@ -82,6 +82,8 @@ namespace physicslib
 		physicslib::Vector3 getAcceleration() const;
 		physicslib::Quaternion getOrientation() const;
 		physicslib::Vector3 getAngularVelocity() const;
+
+		physicslib::Matrix3 getTransformMatrix() const;
 		physicslib::Vector3 getBoxSize() const;
 
 		// Setters
@@ -115,16 +117,6 @@ namespace physicslib
 		 * Get the vertices of the cube representing the rigid body.
 		 * The coordinates are in the local space of the rigid body.
 		 */
-		std::vector<double> getBoxLocalVertices() const;
-
-		/*
-		 * Convert the given vertices to world space
-		 */
-		void toWorldSpace(std::vector<double>& vertices) const;
-
-		/*
-		 * Apply the orientation of the rigid body to the given vertices.
-		 */
-		void applyRotation(std::vector<double>& vertices) const;
+		std::vector<Vector3> getBoxLocalVertices() const;
 	};
 }

@@ -47,11 +47,6 @@ private:
 	void generateAllForces(std::vector<std::shared_ptr<physicslib::RigidBody>>& rigidBodies);
 
 	/**
-	 * Function that detects all the contacts between objects and add them in the contacts register.
-	 */
-	void narrowPhase(std::vector<std::shared_ptr<physicslib::RigidBody>>& rigidBodies);
-
-	/**
 	 * Function that generates collision data between two primitives
 	 */
 	std::vector<physicslib::Contact> generateContacts(const physicslib::Primitive& primitive1, const physicslib::Primitive& primitive2) const;
@@ -61,24 +56,8 @@ private:
 	 */
 	void broadPhase(std::vector<std::shared_ptr<physicslib::RigidBody>>& rigidBodies, std::vector<std::pair<physicslib::Vector3, const physicslib::PlanePrimitive*>>& result);
 
-	//void detectContact
-
 	/**
-	 * Function that generates collision data between a plane primitive and a box primitive
+	 * Function that realize the narrow phase of the collision detection.
 	 */
-	static std::vector<physicslib::Contact> generateContactsVertexFace(const physicslib::PlanePrimitive& planePrimitive, const physicslib::BoxPrimitive& boxPrimitive);
-
-	/**
-	 * Function used to call a specific contact generation function using tamplate
-	 */
-	template<typename DerivedPrimitive1, typename DerivedPrimitive2, typename Function>
-	std::vector<physicslib::Contact> generateContactsDerived(Function generateContactsDerived, const physicslib::Primitive& primitive1, const physicslib::Primitive& primitive2) const
-	{
-		// Check if cast is safe
-		assert(dynamic_cast<const DerivedPrimitive1*>(&primitive1) != nullptr);
-		assert(dynamic_cast<const DerivedPrimitive2*>(&primitive2) != nullptr);
-
-		// Downcast primitives and invoke function on them
-		return generateContactsDerived(static_cast<const DerivedPrimitive1&>(primitive1), static_cast<const DerivedPrimitive2&>(primitive2));
-	}
+	std::vector<physicslib::Contact> narrowPhase(std::vector<std::pair<physicslib::Vector3, const physicslib::PlanePrimitive*>>& possibleCollisions);
 };

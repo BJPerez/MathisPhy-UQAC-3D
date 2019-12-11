@@ -13,7 +13,7 @@ namespace physicslib
 		/**
 		 * Contructor
 		 */
-		Primitive(std::shared_ptr<RigidBody> rigidBody, const Matrix34& transformMatrix);
+		Primitive(std::shared_ptr<RigidBody> rigidBody);
 
 		/**
 		 * Default copy constructor
