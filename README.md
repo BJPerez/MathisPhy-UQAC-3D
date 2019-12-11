@@ -42,7 +42,7 @@ The next steps depend on your environment but you should be able to:
 
 ### Running
 
-While the program is running, press E to create a single rigid body with a non null linear and angular velocity. Press R to create 2 rigid bodies that are going to collide one onto the other; after the collision, we can notice their rotations. Press E or R deletes the already existing rigid bodies (to avoid unwanted collisions).
+While the program is running, press E to create a rigid body with a random position and velocity. Pressing E again replaces the body with a new one (with different position and velocity). The simulation ends when the body touches one of the edge planes (they correspond to the edges of the console).
 
 ## Authors
 
