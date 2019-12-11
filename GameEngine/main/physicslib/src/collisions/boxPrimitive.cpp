@@ -1,5 +1,7 @@
 #include "collisions/boxPrimitive.hpp"
 
+#include <math.h>
+
 namespace physicslib
 {
 	BoxPrimitive::BoxPrimitive(std::shared_ptr<RigidBody> rigidBody)

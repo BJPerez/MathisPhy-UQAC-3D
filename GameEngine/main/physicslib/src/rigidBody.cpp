@@ -148,6 +148,11 @@ namespace physicslib
 		return verticesDouble;
 	}
 
+	physicslib::Vector3 RigidBody::getBoxSize() const
+	{
+		return m_boxSize;
+	}
+
 	std::vector<Vector3> RigidBody::getBoxLocalVertices() const
 	{
 		std::vector<Vector3> vertices =
