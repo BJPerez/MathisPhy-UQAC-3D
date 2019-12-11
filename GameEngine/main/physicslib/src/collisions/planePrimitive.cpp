@@ -4,7 +4,7 @@ namespace physicslib
 {
 	PlanePrimitive::PlanePrimitive(const Vector3& normal, double offset)
 		: Primitive(nullptr)
-		, m_normal(normal)
+		, m_normal(normal.getNormalizedVector())
 		, m_offset(offset)
 	{
 	}
