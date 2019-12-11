@@ -16,32 +16,6 @@ PhysicEngine::PhysicEngine()
 	physicslib::Octree::setTopPlane(&m_topPlane);
 	physicslib::Octree::setRightPlane(&m_rightPlane);
 	physicslib::Octree::setLeftPlane(&m_leftPlane);
-
-	/*physicslib::BoundingBox octreeBox;
-	octreeBox.x = 0;
-	octreeBox.y = 0;
-	octreeBox.z = 0;
-	octreeBox.width = 800;
-	octreeBox.height = 600;
-	octreeBox.depth = 1000;
-	physicslib::Octree octree(0, octreeBox);
-
-	physicslib::Vector3 v1(100, 0, 0);
-	octree.insert(v1);
-	std::cout << octree.getIndex(v1) << std::endl;
-	physicslib::Vector3 v2(101, 0, 0);
-	octree.insert(v2);
-	std::cout << octree.getIndex(v2) << std::endl;
-	physicslib::Vector3 v3(0, 500, 0);
-	octree.insert(v3);
-	std::cout << octree.getIndex(v3) << std::endl;
-	physicslib::Vector3 v4(0, 0, 900);
-	octree.insert(v4);
-	std::cout << octree.getIndex(v4) << std::endl;
-
-	std::vector<std::pair<physicslib::Vector3, const physicslib::PlanePrimitive*>> result;
-	octree.retrieve(result, true, true, true, true);
-	std::cout << result.size() << std::endl;*/
 }
 
 void PhysicEngine::update(std::vector<std::shared_ptr<physicslib::RigidBody>>& rigidBodies, const double frametime)
@@ -66,6 +40,11 @@ void PhysicEngine::update(std::vector<std::shared_ptr<physicslib::RigidBody>>& r
 	for (const physicslib::Contact& contact : collisionData)
 	{
 		std::cout << contact.toString() << std::endl;
+	}
+
+	if (!collisionData.empty())
+	{
+		exit(EXIT_SUCCESS);
 	}
 
 	// clean registers
@@ -116,41 +95,6 @@ std::vector<physicslib::Contact> PhysicEngine::narrowPhase(std::vector<std::pair
 			physicslib::Vector3 contactPoint(collisionPair.first);
 
 			collisionData.push_back(physicslib::Contact(contactPoint, collisionPair.second->getNormal(), -penetration));
-		}
-	}
-
-	return collisionData;
-}
-
-std::vector<physicslib::Contact> PhysicEngine::generateContacts(const physicslib::Primitive& primitive1, const physicslib::Primitive& primitive2) const
-{
-	// Check if primitive1 is a plane primitive
-	if (primitive1.getVertices().empty())
-	{
-		return generateContactsDerived<physicslib::PlanePrimitive, physicslib::BoxPrimitive>(&PhysicEngine::generateContactsVertexFace, primitive1, primitive2);
-	}
-
-	// Check if primitive2 is a plane primitive
-	if (primitive2.getVertices().empty())
-	{
-		return generateContactsDerived<physicslib::PlanePrimitive, physicslib::BoxPrimitive>(&PhysicEngine::generateContactsVertexFace, primitive2, primitive1);
-	}
-
-	return std::vector<physicslib::Contact>();
-}
-
-std::vector<physicslib::Contact> PhysicEngine::generateContactsVertexFace(const physicslib::PlanePrimitive& planePrimitive, const physicslib::BoxPrimitive& boxPrimitive)
-{
-	std::vector<physicslib::Contact> collisionData;
-
-	for (physicslib::Vector3 vertex : boxPrimitive.getVertices())
-	{
-		if (planePrimitive.getNormal() * vertex <= -planePrimitive.getOffset())
-		{
-			// Contact point at half way between point and plane
-			physicslib::Vector3 contactPoint((vertex + planePrimitive.getNormal() * planePrimitive.getOffset()) / 2.);
-
-			collisionData.push_back(physicslib::Contact(contactPoint, planePrimitive.getNormal(), planePrimitive.getNormal() * vertex + planePrimitive.getOffset()));
 		}
 	}
 

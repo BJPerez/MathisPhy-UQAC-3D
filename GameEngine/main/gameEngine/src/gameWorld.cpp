@@ -2,6 +2,8 @@
 
 #include <chrono>
 #include <algorithm>
+#include <cstdlib>
+#include <ctime>
 
 GameWorld::GameWorld(): m_mainWindow(m_renderEngine.getMainWindow())
 {
@@ -12,6 +14,7 @@ GameWorld::GameWorld(): m_mainWindow(m_renderEngine.getMainWindow())
 
 	// Game variables
 	glfwSetWindowUserPointer(m_mainWindow, &m_inputsManager); //save the manager's pointer to the window to be able to access it in the inputs callback function
+	srand(time(nullptr));
 }
 
 void GameWorld::run()
@@ -71,9 +74,11 @@ void GameWorld::processIntention(const InputsManager::Intention intention)
 	{
 		m_rigidBodies.clear();
 
+
+
 		std::shared_ptr<physicslib::RigidBody> boxRigidBody = std::make_shared<physicslib::RigidBody>(
 			1., 1., physicslib::Vector3(10, 3, 3),
-			physicslib::Vector3(0, -35, 0), physicslib::Vector3(0, 0, 0), physicslib::Vector3(),
+			physicslib::Vector3(rand() % 41 - 20., rand() % 41 - 20., 0), physicslib::Vector3(rand() % 81 - 40., rand() % 81 - 40., 0), physicslib::Vector3(),
 			physicslib::Quaternion(1, 0, 0, 0), physicslib::Vector3(1, 1, 1)
 		);
 

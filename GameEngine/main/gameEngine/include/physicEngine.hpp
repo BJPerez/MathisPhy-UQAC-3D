@@ -60,27 +60,4 @@ private:
 	 * Function that realize the narrow phase of the collision detection.
 	 */
 	std::vector<physicslib::Contact> narrowPhase(std::vector<std::pair<physicslib::Vector3, const physicslib::PlanePrimitive*>>& possibleCollisions);
-
-	/**
-	 * Function that generates collision data between a plane primitive and a box primitive
-	 */
-	static std::vector<physicslib::Contact> generateContactsVertexFace(const physicslib::PlanePrimitive& planePrimitive, const physicslib::BoxPrimitive& boxPrimitive);
-
-	/**
-	 * Function used to call a specific contact generation function using tamplate
-	 * The `generateContactDerived` function need to be static or non-member
-	 * and has 2 parameters of the desired derived types of `Primitive`
-	 * Example call :
-	 * `generateContactsDerived<physicslib::PlanePrimitive, physicslib::BoxPrimitive>(&PhysicEngine::generateContactsVertexFace, primitive1, primitive2);`
-	 */
-	template<typename DerivedPrimitive1, typename DerivedPrimitive2, typename Function>
-	std::vector<physicslib::Contact> generateContactsDerived(Function generateContactsDerived, const physicslib::Primitive& primitive1, const physicslib::Primitive& primitive2) const
-	{
-		// Check if cast is safe
-		assert(dynamic_cast<const DerivedPrimitive1*>(&primitive1) != nullptr);
-		assert(dynamic_cast<const DerivedPrimitive2*>(&primitive2) != nullptr);
-
-		// Downcast primitives and invoke function on them
-		return generateContactsDerived(static_cast<const DerivedPrimitive1&>(primitive1), static_cast<const DerivedPrimitive2&>(primitive2));
-	}
 };
