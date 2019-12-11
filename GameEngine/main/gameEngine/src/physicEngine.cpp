@@ -5,12 +5,15 @@
 #include "collisions/planePrimitive.hpp"
 #include "collisions/boxPrimitive.hpp"
 #include "collisions/octree.hpp"
+#include <chrono>
+#include <thread>
+
 
 PhysicEngine::PhysicEngine()
-	: m_leftPlane(physicslib::Vector3(1, 0, 0), 50)
-	, m_rightPlane(physicslib::Vector3(-1, 0, 0), -50)
-	, m_topPlane(physicslib::Vector3(0, -1, 0), -40)
-	, m_bottomPlane(physicslib::Vector3(0, 1, 0), 40)
+	: m_leftPlane(physicslib::Vector3(1, 0, 0), 55)
+	, m_rightPlane(physicslib::Vector3(-1, 0, 0), -55)
+	, m_topPlane(physicslib::Vector3(0, -1, 0), -41)
+	, m_bottomPlane(physicslib::Vector3(0, 1, 0), 41)
 {
 	physicslib::Octree::setBottomPlane(&m_bottomPlane);
 	physicslib::Octree::setTopPlane(&m_topPlane);
@@ -44,6 +47,8 @@ void PhysicEngine::update(std::vector<std::shared_ptr<physicslib::RigidBody>>& r
 
 	if (!collisionData.empty())
 	{
+		using namespace std::chrono_literals;
+		std::this_thread::sleep_for(1000000s);
 		exit(EXIT_SUCCESS);
 	}
 
@@ -67,8 +72,8 @@ void PhysicEngine::broadPhase(std::vector<std::shared_ptr<physicslib::RigidBody>
 	octreeBox.x = 0;
 	octreeBox.y = 0;
 	octreeBox.z = 0;
-	octreeBox.width = 100;
-	octreeBox.height = 80;
+	octreeBox.width = 110;
+	octreeBox.height = 82;
 	octreeBox.depth = 1000;
 	physicslib::Octree octree(0, octreeBox);
 
