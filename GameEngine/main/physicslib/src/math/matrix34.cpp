@@ -42,6 +42,15 @@ namespace physicslib
 	{
 	}
 
+	Matrix34::Matrix34(const Matrix3& matrix3, const Vector3& vector)
+		: m_data({
+			matrix3(0, 0), matrix3(0, 1), matrix3(0, 2), vector.getX(),
+			matrix3(1, 0), matrix3(1, 1), matrix3(1, 2), vector.getY(),
+			matrix3(2, 0), matrix3(2, 1), matrix3(2, 2), vector.getZ()
+		})
+	{
+	}
+
 	double Matrix34::getDeterminant() const
 	{
 		return m_data[8] * m_data[5] * m_data[2] 

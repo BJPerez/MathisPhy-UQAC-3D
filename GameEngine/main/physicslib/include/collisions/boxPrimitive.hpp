@@ -11,7 +11,7 @@ namespace physicslib
 		/**
 		 * Contructor
 		 */
-		BoxPrimitive(std::shared_ptr<RigidBody> rigidBody, const Matrix34& transformMatrix, const Vector3& halfSizes);
+		BoxPrimitive(std::shared_ptr<RigidBody> rigidBody);
 
 		/**
 		 * Default copy constructor

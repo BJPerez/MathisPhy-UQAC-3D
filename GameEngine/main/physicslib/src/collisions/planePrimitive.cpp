@@ -3,8 +3,8 @@
 namespace physicslib
 {
 	PlanePrimitive::PlanePrimitive(const Vector3& normal, double offset)
-		: Primitive(nullptr, Matrix34())
-		, m_normal(normal)
+		: Primitive(nullptr)
+		, m_normal(normal.getNormalizedVector())
 		, m_offset(offset)
 	{
 	}

@@ -1,11 +1,21 @@
 #include "../include/physicEngine.hpp"
 
+#include <iostream>
 #include "math/vector3.hpp"
 #include "collisions/planePrimitive.hpp"
 #include "collisions/boxPrimitive.hpp"
+#include "collisions/octree.hpp"
 
 PhysicEngine::PhysicEngine()
+	: m_leftPlane(physicslib::Vector3(1, 0, 0), 50)
+	, m_rightPlane(physicslib::Vector3(-1, 0, 0), -50)
+	, m_topPlane(physicslib::Vector3(0, -1, 0), -40)
+	, m_bottomPlane(physicslib::Vector3(0, 1, 0), 40)
 {
+	physicslib::Octree::setBottomPlane(&m_bottomPlane);
+	physicslib::Octree::setTopPlane(&m_topPlane);
+	physicslib::Octree::setRightPlane(&m_rightPlane);
+	physicslib::Octree::setLeftPlane(&m_leftPlane);
 }
 
 void PhysicEngine::update(std::vector<std::shared_ptr<physicslib::RigidBody>>& rigidBodies, const double frametime)
@@ -23,8 +33,19 @@ void PhysicEngine::update(std::vector<std::shared_ptr<physicslib::RigidBody>>& r
 	}
 
 	// look for collisions and resolve them
-	detectContacts(rigidBodies);
-	m_contactRegister.resolveContacts(frametime);
+	std::vector<std::pair<physicslib::Vector3, const physicslib::PlanePrimitive*>> result;
+	broadPhase(rigidBodies, result);
+	std::vector<physicslib::Contact> collisionData = narrowPhase(result);
+
+	for (const physicslib::Contact& contact : collisionData)
+	{
+		std::cout << contact.toString() << std::endl;
+	}
+
+	if (!collisionData.empty())
+	{
+		exit(EXIT_SUCCESS);
+	}
 
 	// clean registers
 	m_contactRegister.clear();
@@ -40,49 +61,40 @@ void PhysicEngine::generateAllForces(std::vector<std::shared_ptr<physicslib::Rig
 	}
 }
 
-void PhysicEngine::detectContacts(std::vector<std::shared_ptr<physicslib::RigidBody>>& rigidBodies)
+void PhysicEngine::broadPhase(std::vector<std::shared_ptr<physicslib::RigidBody>>& rigidBodies, std::vector<std::pair<physicslib::Vector3, const physicslib::PlanePrimitive*>>& result)
 {
-	if (rigidBodies.size() >= 2)
-	{
-		if (abs(rigidBodies[0]->getPosition().getX() - rigidBodies[1]->getPosition().getX()) < 10)
+	physicslib::BoundingBox octreeBox;
+	octreeBox.x = 0;
+	octreeBox.y = 0;
+	octreeBox.z = 0;
+	octreeBox.width = 100;
+	octreeBox.height = 80;
+	octreeBox.depth = 1000;
+	physicslib::Octree octree(0, octreeBox);
+
+	std::for_each(rigidBodies.begin(), rigidBodies.end(),
+		[&octree](std::shared_ptr<physicslib::RigidBody> rigidBody)
 		{
-			rigidBodies[0]->setVelocity(-rigidBodies[0]->getVelocity());
-			rigidBodies[1]->setVelocity(-rigidBodies[1]->getVelocity());
-			rigidBodies[0]->addForceAtBodyPoint(physicslib::Vector3(-500, 0, 500), physicslib::Vector3(15, 0, 15));
-			rigidBodies[1]->addForceAtBodyPoint(physicslib::Vector3(500, 0, -500), physicslib::Vector3(-15, 0, -15));
-		}
-	}
+			std::shared_ptr<physicslib::BoxPrimitive> boxPrimitive = std::make_shared<physicslib::BoxPrimitive>(rigidBody);
+			octree.insert(boxPrimitive);
+		});
+
+	octree.retrieve(result, true, true, true, true);
 }
 
-std::vector<physicslib::Contact> PhysicEngine::generateContacts(const physicslib::Primitive& primitive1, const physicslib::Primitive& primitive2) const
-{
-	// Check if primitive1 is a plane primitive
-	if (primitive1.getVertices().empty())
-	{
-		return generateContactsDerived<physicslib::PlanePrimitive, physicslib::BoxPrimitive>(&PhysicEngine::generateContactsVertexFace, primitive1, primitive2);
-	}
-
-	// Check if primitive2 is a plane primitive
-	if (primitive2.getVertices().empty())
-	{
-		return generateContactsDerived<physicslib::PlanePrimitive, physicslib::BoxPrimitive>(&PhysicEngine::generateContactsVertexFace, primitive2, primitive1);
-	}
-
-	return std::vector<physicslib::Contact>();
-}
-
-std::vector<physicslib::Contact> PhysicEngine::generateContactsVertexFace(const physicslib::PlanePrimitive& planePrimitive, const physicslib::BoxPrimitive& boxPrimitive)
+std::vector<physicslib::Contact> PhysicEngine::narrowPhase(std::vector<std::pair<physicslib::Vector3, const physicslib::PlanePrimitive*>>& possibleCollisions)
 {
 	std::vector<physicslib::Contact> collisionData;
 
-	for (physicslib::Vector3 vertex : boxPrimitive.getVertices())
+	for (std::pair<physicslib::Vector3, const physicslib::PlanePrimitive*> collisionPair : possibleCollisions)
 	{
-		if (planePrimitive.getNormal() * vertex <= -planePrimitive.getOffset())
+		double penetration = collisionPair.second->getNormal() * collisionPair.first + abs(collisionPair.second->getOffset());
+		if (penetration < 0)
 		{
 			// Contact point at half way between point and plane
-			physicslib::Vector3 contactPoint((vertex + planePrimitive.getNormal() * planePrimitive.getOffset()) / 2.);
+			physicslib::Vector3 contactPoint(collisionPair.first);
 
-			collisionData.push_back(physicslib::Contact(contactPoint, planePrimitive.getNormal(), planePrimitive.getOffset()));
+			collisionData.push_back(physicslib::Contact(contactPoint, collisionPair.second->getNormal(), -penetration));
 		}
 	}
 

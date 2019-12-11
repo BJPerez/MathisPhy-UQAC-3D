@@ -2,9 +2,12 @@
 
 namespace physicslib
 {
-	Primitive::Primitive(std::shared_ptr<RigidBody> rigidBody, const Matrix34& transformMatrix)
+	Primitive::Primitive(std::shared_ptr<RigidBody> rigidBody)
 		: m_rigidBody(rigidBody)
-		, m_transformMatrix(transformMatrix)
 	{
+		if (rigidBody != nullptr)
+		{
+			m_transformMatrix = rigidBody->getTransformMatrix(), rigidBody->getPosition();
+		}
 	}
 }
