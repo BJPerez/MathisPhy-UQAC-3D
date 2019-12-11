@@ -42,7 +42,7 @@ The next steps depend on your environment but you should be able to:
 
 ### Running
 
-While the program is running, press E to create a rigid body with a random position and velocity. Pressing E again replaces the body with a new one (with different position and velocity). The simulation ends when the body touches one of the edge planes (they correspond to the edges of the console).
+While the program is running, press E to create a rigid body with a random position and velocity. Pressing E again replaces the body with a new one (with different position and velocity). The simulation ends when the body touches one of the edge planes (they correspond to the edges of the console) and the data about the collision is displayed : the contact point, the normal vector, and the penetration value.
 
 ## Authors
 
