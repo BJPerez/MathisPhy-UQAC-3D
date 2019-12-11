@@ -82,7 +82,6 @@ namespace physicslib
 		physicslib::Vector3 getAcceleration() const;
 		physicslib::Quaternion getOrientation() const;
 		physicslib::Vector3 getAngularVelocity() const;
-		physicslib::Vector3 getBoxSize() const;
 
 		physicslib::Matrix3 getTransformMatrix() const;
 		physicslib::Vector3 getBoxSize() const;

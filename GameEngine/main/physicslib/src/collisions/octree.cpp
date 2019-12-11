@@ -65,7 +65,7 @@ namespace physicslib
 		node.depth = subDepth;
 		m_nodes.push_back(Octree(m_level + 1, node));
 
-		node.x = m_bounds.x + subDepth;
+		node.x = m_bounds.x + subWidth;
 		node.y = m_bounds.y + subHeight;
 		node.z = m_bounds.z;
 		node.width = subWidth;
@@ -73,7 +73,7 @@ namespace physicslib
 		node.depth = subDepth;
 		m_nodes.push_back(Octree(m_level + 1, node));
 
-		node.x = m_bounds.x + subDepth;
+		node.x = m_bounds.x + subWidth;
 		node.y = m_bounds.y;
 		node.z = m_bounds.z + subDepth;
 		node.width = subWidth;
@@ -106,8 +106,8 @@ namespace physicslib
 		double depthMidPoint = m_bounds.z + (m_bounds.depth / 2);
 
 		// We look on the 3 different axes
-		bool topQuadrant = (point.getY() > verticalMidpoint);
-		bool rightQuadrant = (point.getX() > horizontalMidpoint);
+		bool topQuadrant = (point.getY() > horizontalMidpoint);
+		bool rightQuadrant = (point.getX() > verticalMidpoint);
 		bool farQuadrant = (point.getZ() > depthMidPoint);
 
 		// We return the index in functions of the position
@@ -185,14 +185,7 @@ namespace physicslib
 
 	bool Octree::hasNodes() const
 	{
-		if (m_nodes.size() != 0)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		return (m_nodes.size() != 0);
 	}
 
 	void Octree::retrieve(std::vector<std::pair<Vector3, const PlanePrimitive *>>& collisions, bool top, bool right, bool bottom, bool left) const

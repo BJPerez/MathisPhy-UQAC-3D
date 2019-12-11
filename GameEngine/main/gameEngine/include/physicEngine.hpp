@@ -47,11 +47,6 @@ private:
 	void generateAllForces(std::vector<std::shared_ptr<physicslib::RigidBody>>& rigidBodies);
 
 	/**
-	 * Function that detects all the contacts between objects and add them in the contacts register.
-	 */
-	void narrowPhase(std::vector<std::shared_ptr<physicslib::RigidBody>>& rigidBodies);
-
-	/**
 	 * Function that generates collision data between two primitives
 	 */
 	std::vector<physicslib::Contact> generateContacts(const physicslib::Primitive& primitive1, const physicslib::Primitive& primitive2) const;
@@ -61,7 +56,10 @@ private:
 	 */
 	void broadPhase(std::vector<std::shared_ptr<physicslib::RigidBody>>& rigidBodies, std::vector<std::pair<physicslib::Vector3, const physicslib::PlanePrimitive*>>& result);
 
-	//void detectContact
+	/**
+	 * Function that realize the narrow phase of the collision detection.
+	 */
+	std::vector<physicslib::Contact> narrowPhase(std::vector<std::pair<physicslib::Vector3, const physicslib::PlanePrimitive*>>& possibleCollisions);
 
 	/**
 	 * Function that generates collision data between a plane primitive and a box primitive
